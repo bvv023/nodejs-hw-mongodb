@@ -14,8 +14,15 @@ const contactSchema = new mongoose.Schema(
       default: 'personal',
     },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
+
+contactSchema.set('toJSON', {
+  transform: (doc, ret, options) => {
+    delete ret.__v;
+    return ret;
+  }
+});
 
 const Contact = mongoose.model('Contact', contactSchema);
 
