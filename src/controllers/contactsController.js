@@ -4,11 +4,29 @@ import { getAllContacts, getContactById, addContact, updateContactById, deleteCo
 
 const getContacts = async (req, res, next) => {
   try {
-    const contacts = await getAllContacts();
+    const { page = 1, perPage = 10, sortBy = 'name', sortOrder = 'asc', type, isFavourite } = req.query;
+
+    const options = {
+      page: Number(page),
+      perPage: Number(perPage),
+      sortBy,
+      sortOrder,
+      filterOptions: {}
+    };
+
+    if (type) {
+      options.filterOptions.contactType = type;
+    }
+
+    if (typeof isFavourite !== 'undefined') {
+      options.filterOptions.isFavourite = isFavourite === 'true';
+    }
+
+    const result = await getAllContacts(options);
     res.status(200).json({
       status: 200,
       message: 'Successfully found contacts!',
-      data: contacts,
+      data: result,
     });
   } catch (error) {
     next(error);
