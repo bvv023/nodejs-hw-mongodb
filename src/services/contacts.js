@@ -1,8 +1,27 @@
 // src/services/contacts.js
 import Contact from '../models/contact.js';
 
-const getAllContacts = async () => {
-  return await Contact.find();
+const getAllContacts = async ({ page, perPage, sortBy, sortOrder, filterOptions }) => {
+  const skip = (page - 1) * perPage;
+  const sortOptions = { [sortBy]: sortOrder === 'asc' ? 1 : -1 };
+
+  const totalItems = await Contact.countDocuments(filterOptions);
+  const totalPages = Math.ceil(totalItems / perPage);
+
+  const contacts = await Contact.find(filterOptions)
+    .sort(sortOptions)
+    .skip(skip)
+    .limit(perPage);
+
+  return {
+    data: contacts,
+    page,
+    perPage,
+    totalItems,
+    totalPages,
+    hasPreviousPage: page > 1,
+    hasNextPage: page < totalPages,
+  };
 };
 
 const getContactById = async (id) => {
