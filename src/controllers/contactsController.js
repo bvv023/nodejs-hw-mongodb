@@ -11,7 +11,7 @@ const getContacts = async (req, res, next) => {
       perPage: Number(perPage),
       sortBy,
       sortOrder,
-      filterOptions: {}
+      filterOptions: { userId: req.user._id }
     };
 
     if (type) {
@@ -36,8 +36,8 @@ const getContacts = async (req, res, next) => {
 const getContact = async (req, res, next) => {
   try {
     const contact = await getContactById(req.params.contactId);
-    if (!contact) {
-      throw createError(404, 'Contact not found');
+    if (!contact || contact.userId.toString() !== req.user._id.toString()) {
+      throw createError(404, 'Contact not found or unauthorized access');
     }
     res.status(200).json({
       status: 200,
@@ -51,7 +51,7 @@ const getContact = async (req, res, next) => {
 
 const createContact = async (req, res, next) => {
   try {
-    const newContact = await addContact(req.body);
+    const newContact = await addContact({ ...req.body, userId: req.user._id });
     res.status(201).json({
       status: 201,
       message: 'Successfully created a contact!',
@@ -64,13 +64,15 @@ const createContact = async (req, res, next) => {
 
 const updateContact = async (req, res, next) => {
   try {
-    const updatedContact = await updateContactById(req.params.contactId, req.body);
-    if (!updatedContact) {
-      throw createError(404, 'Contact not found');
+    const contact = await getContactById(req.params.contactId);
+    if (!contact || contact.userId.toString() !== req.user._id.toString()) {
+      throw createError(404, 'Contact not found or unauthorized access');
     }
+
+    const updatedContact = await updateContactById(req.params.contactId, req.body);
     res.status(200).json({
       status: 200,
-      message: 'Successfully patched a contact!',
+      message: 'Successfully updated the contact!',
       data: updatedContact,
     });
   } catch (error) {
@@ -80,10 +82,12 @@ const updateContact = async (req, res, next) => {
 
 const deleteContact = async (req, res, next) => {
   try {
-    const result = await deleteContactById(req.params.contactId);
-    if (!result) {
-      throw createError(404, 'Contact not found');
+    const contact = await getContactById(req.params.contactId);
+    if (!contact || contact.userId.toString() !== req.user._id.toString()) {
+      throw createError(404, 'Contact not found or unauthorized access');
     }
+
+    await deleteContactById(req.params.contactId);
     res.status(204).send();
   } catch (error) {
     next(error);
