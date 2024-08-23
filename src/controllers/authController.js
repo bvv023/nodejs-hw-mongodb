@@ -12,14 +12,19 @@ export const register = async (req, res, next) => {
     });
   } catch (error) {
     console.error('Registration error:', error);
-    next(createError(500, error.message));
+    if (error.message === 'Email in use') {
+      next(createError(409, error.message));
+    } else {
+      next(createError(500, error.message));
+    }
   }
 };
 
 export const login = async (req, res, next) => {
   try {
-    const { accessToken, refreshToken } = await loginUser(req.body);
+    const { accessToken, refreshToken, sessionId } = await loginUser(req.body);
     res.cookie('refreshToken', refreshToken, { httpOnly: true });
+    res.cookie('sessionId', sessionId, { httpOnly: true });
     res.status(200).json({
       status: 200,
       message: 'Successfully logged in!',
@@ -34,7 +39,6 @@ export const login = async (req, res, next) => {
 export const refresh = async (req, res, next) => {
   try {
     console.log('Refresh endpoint hit');
-
     console.log('Cookies:', req.cookies);
 
     if (!req.cookies) {
@@ -48,8 +52,9 @@ export const refresh = async (req, res, next) => {
       throw createError(403, 'Refresh token not found');
     }
 
-    const { accessToken, newRefreshToken } = await refreshSession(refreshToken);
+    const { accessToken, newRefreshToken, sessionId } = await refreshSession(refreshToken);
     res.cookie('refreshToken', newRefreshToken, { httpOnly: true });
+    res.cookie('sessionId', sessionId, { httpOnly: true });
     res.status(200).json({
       status: 200,
       message: 'Successfully refreshed a session!',

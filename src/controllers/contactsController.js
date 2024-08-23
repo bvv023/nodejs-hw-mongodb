@@ -1,6 +1,8 @@
 // src/controllers/contactsController.js
+// src/controllers/contactsController.js
 import createError from 'http-errors';
-import { getAllContacts, getContactById, addContact, updateContactById, deleteContactById } from '../services/contacts.js';
+import Contact from '../models/contact.js';
+import { getAllContacts, getContactById, addContact } from '../services/contacts.js';
 
 const getContacts = async (req, res, next) => {
   try {
@@ -64,12 +66,16 @@ const createContact = async (req, res, next) => {
 
 const updateContact = async (req, res, next) => {
   try {
-    const contact = await getContactById(req.params.contactId);
-    if (!contact || contact.userId.toString() !== req.user._id.toString()) {
+    const updatedContact = await Contact.findOneAndUpdate(
+      { _id: req.params.contactId, userId: req.user._id },
+      req.body,
+      { new: true }
+    );
+
+    if (!updatedContact) {
       throw createError(404, 'Contact not found or unauthorized access');
     }
 
-    const updatedContact = await updateContactById(req.params.contactId, req.body);
     res.status(200).json({
       status: 200,
       message: 'Successfully updated the contact!',
@@ -82,12 +88,12 @@ const updateContact = async (req, res, next) => {
 
 const deleteContact = async (req, res, next) => {
   try {
-    const contact = await getContactById(req.params.contactId);
-    if (!contact || contact.userId.toString() !== req.user._id.toString()) {
+    const contact = await Contact.findOneAndDelete({ _id: req.params.contactId, userId: req.user._id });
+
+    if (!contact) {
       throw createError(404, 'Contact not found or unauthorized access');
     }
 
-    await deleteContactById(req.params.contactId);
     res.status(204).send();
   } catch (error) {
     next(error);
