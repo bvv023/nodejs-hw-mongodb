@@ -14,12 +14,7 @@ const registerUser = async ({ name, email, password }) => {
   const hashedPassword = await bcrypt.hash(password, 10);
   const newUser = await User.create({ name, email, password: hashedPassword });
 
-  const userWithoutPassword = newUser.toObject();
-  delete userWithoutPassword.password;
-
-  console.log("New user registered:", userWithoutPassword);
-
-  return userWithoutPassword;
+  return newUser.toJSON();
 };
 
 const loginUser = async ({ email, password }) => {
@@ -44,44 +39,27 @@ const loginUser = async ({ email, password }) => {
     refreshTokenValidUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
   });
 
-  console.log("Session created:", session);
-
-  return { accessToken, refreshToken };
+  return { accessToken, refreshToken, sessionId: session._id };
 };
 
 const refreshSession = async (refreshToken) => {
-  try {
-    if (!refreshToken) {
-      throw createError(403, 'No refresh token provided');
-    }
+  const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+  const session = await Session.findOne({ refreshToken });
 
-    console.log("Refresh token received:", refreshToken);
-    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-    console.log("Decoded token:", decoded);
-
-    const session = await Session.findOne({ refreshToken });
-    console.log("Session found:", session);
-
-    if (!session || session.refreshTokenValidUntil < Date.now()) {
-      throw createError(403, 'Invalid refresh token');
-    }
-
-    const newAccessToken = jwt.sign({ userId: decoded.userId }, process.env.JWT_ACCESS_SECRET, { expiresIn: '15m' });
-    const newRefreshToken = jwt.sign({ userId: decoded.userId }, process.env.JWT_REFRESH_SECRET, { expiresIn: '30d' });
-
-    session.accessToken = newAccessToken;
-    session.refreshToken = newRefreshToken;
-    session.accessTokenValidUntil = new Date(Date.now() + 15 * 60 * 1000);
-    session.refreshTokenValidUntil = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-    await session.save();
-
-    console.log("Session refreshed:", session);
-
-    return { accessToken: newAccessToken, refreshToken: newRefreshToken };
-  } catch (error) {
-    console.error("Refresh error:", error);
+  if (!session || session.refreshTokenValidUntil < Date.now()) {
     throw createError(403, 'Invalid refresh token');
   }
+
+  const newAccessToken = jwt.sign({ userId: decoded.userId }, process.env.JWT_ACCESS_SECRET, { expiresIn: '15m' });
+  const newRefreshToken = jwt.sign({ userId: decoded.userId }, process.env.JWT_REFRESH_SECRET, { expiresIn: '30d' });
+
+  session.accessToken = newAccessToken;
+  session.refreshToken = newRefreshToken;
+  session.accessTokenValidUntil = new Date(Date.now() + 15 * 60 * 1000);
+  session.refreshTokenValidUntil = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+  await session.save();
+
+  return { accessToken: newAccessToken, newRefreshToken, sessionId: session._id };
 };
 
 const logoutUser = async (refreshToken) => {
@@ -90,8 +68,6 @@ const logoutUser = async (refreshToken) => {
   if (!session) {
     throw createError(404, 'Session not found');
   }
-
-  console.log("Session deleted:", session);
 };
 
 export { registerUser, loginUser, refreshSession, logoutUser };
