@@ -1,5 +1,4 @@
 // src/controllers/contactsController.js
-// src/controllers/contactsController.js
 import createError from 'http-errors';
 import Contact from '../models/contact.js';
 import { getAllContacts, getContactById, addContact } from '../services/contacts.js';
