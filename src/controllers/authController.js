@@ -1,6 +1,6 @@
 // src/controllers/authController.js
 import createError from 'http-errors';
-import { registerUser, loginUser, refreshSession, logoutUser } from '../services/authService.js';
+import { registerUser, loginUser, refreshSession, logoutUser, sendResetEmailService, resetPasswordService } from '../services/authService.js';
 
 export const register = async (req, res, next) => {
   try {
@@ -73,5 +73,31 @@ export const logout = async (req, res, next) => {
   } catch (error) {
     console.error('Logout error:', error);
     next(createError(500, error.message));
+  }
+};
+
+export const sendResetEmail = async (req, res, next) => {
+  try {
+    await sendResetEmailService(req.body.email);
+    res.status(200).json({
+      status: 200,
+      message: 'Reset password email has been successfully sent.',
+      data: {},
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const resetPassword = async (req, res, next) => {
+  try {
+    await resetPasswordService(req.body.token, req.body.password);
+    res.status(200).json({
+      status: 200,
+      message: 'Password has been successfully reset.',
+      data: {},
+    });
+  } catch (error) {
+    next(error);
   }
 };

@@ -14,6 +14,7 @@ const contactSchema = new mongoose.Schema(
       required: true,
       default: 'personal',
     },
+    photo: { type: String }, // Переміщено на рівень з іншими полями
   },
   { timestamps: true }
 );

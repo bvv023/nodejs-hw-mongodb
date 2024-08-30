@@ -1,7 +1,11 @@
 // src/utils/ctrlWrapper.js
 const ctrlWrapper = (ctrl) => {
-  return (req, res, next) => {
-    ctrl(req, res, next).catch(next);
+  return async (req, res, next) => {
+    try {
+      await ctrl(req, res, next);
+    } catch (error) {
+      next(error);
+    }
   };
 };
 
