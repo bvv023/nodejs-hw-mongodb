@@ -9,6 +9,7 @@ import contactsRouter from './routers/contactsRouter.js';
 import authRouter from './routers/authRouter.js';
 import errorHandler from './middlewares/errorHandler.js';
 import notFoundHandler from './middlewares/notFoundHandler.js';
+import env from './utils/env.js';
 
 const setupServer = () => {
   const app = express();
@@ -22,11 +23,11 @@ const setupServer = () => {
   app.use(cookieParser());
 
   app.use(session({
-    secret: process.env.SESSION_SECRET || 'mySuperSecret',
+    secret: env('SESSION_SECRET', 'mySuperSecret'),
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
-      mongoUrl: `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_URL}/${process.env.MONGODB_DB}`,
+      mongoUrl: `mongodb+srv://${env('MONGODB_USER')}:${env('MONGODB_PASSWORD')}@${env('MONGODB_URL')}/${env('MONGODB_DB')}`,
     }),
     cookie: {
       maxAge: 1000 * 60 * 60 * 24,
@@ -45,7 +46,7 @@ const setupServer = () => {
 
   app.use(errorHandler);
 
-  const PORT = process.env.PORT || 3000;
+  const PORT = env('PORT', 3000);
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });

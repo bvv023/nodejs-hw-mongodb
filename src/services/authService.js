@@ -4,6 +4,13 @@ import jwt from 'jsonwebtoken';
 import createError from 'http-errors';
 import User from '../models/user.js';
 import Session from '../models/session.js';
+import { SMTP, APP_DOMAIN } from '../constants/index.js';
+import { sendEmail } from '../utils/sendMail.js';
+import fs from 'fs';
+import path from 'path';
+
+// Логування SMTP налаштувань
+console.log(`SMTP Configuration: Host - ${SMTP.SMTP_HOST}, Port - ${SMTP.SMTP_PORT}`);
 
 const registerUser = async ({ name, email, password }) => {
   const existingUser = await User.findOne({ email });
@@ -70,4 +77,65 @@ const logoutUser = async (refreshToken) => {
   }
 };
 
-export { registerUser, loginUser, refreshSession, logoutUser };
+const sendResetEmailService = async (email) => {
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw createError(404, 'User not found!');
+  }
+
+  // Додаємо userId в токен
+  const resetToken = jwt.sign({ email, userId: user._id }, process.env.JWT_SECRET, { expiresIn: '5m' });
+  const resetLink = `${APP_DOMAIN}/reset-password?token=${resetToken}`;
+
+  // Зчитуємо HTML шаблон
+  const templatePath = path.join(process.cwd(), 'src', 'templates', 'reset-password-email.html');
+  let emailHtml = fs.readFileSync(templatePath, 'utf8');
+
+  // Заміна змінних у шаблоні
+  emailHtml = emailHtml.replace('{{name}}', user.name);
+  emailHtml = emailHtml.replace('{{link}}', resetLink);
+
+  const emailOptions = {
+    from: SMTP.SMTP_FROM,
+    to: email,
+    subject: 'Password Reset',
+    html: emailHtml,
+  };
+
+  try {
+    await sendEmail(emailOptions);
+    console.log('Reset email sent successfully to:', email);
+  } catch (error) {
+    console.error('Email sending error details:', error);
+    throw createError(500, 'Failed to send the email, please try again later.');
+  }
+};
+
+const resetPasswordService = async (token, newPassword) => {
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findOne({ email: decoded.email });
+    if (!user) {
+      throw createError(404, 'User not found!');
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    await user.save();
+
+    await Session.deleteMany({ userId: user._id });
+    console.log('Password reset successfully for user:', user.email);
+  } catch (error) {
+    if (error instanceof jwt.TokenExpiredError) {
+      throw createError(401, 'Token is expired');
+    } else if (error instanceof jwt.JsonWebTokenError) {
+      throw createError(401, 'Token is invalid');
+    } else {
+      throw createError(500, 'An error occurred while resetting the password');
+    }
+  }
+};
+
+export { registerUser, loginUser, refreshSession, logoutUser, sendResetEmailService, resetPasswordService };
+
+
