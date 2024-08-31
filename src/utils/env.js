@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import fs from 'fs';
 
-const envPath = path.resolve(process.cwd(), '.env');
+const envPath = path.resolve('.env');
 
 if (fs.existsSync(envPath)) {
   dotenv.config({ path: envPath });
