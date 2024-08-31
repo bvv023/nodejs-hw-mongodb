@@ -3,12 +3,10 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import createError from 'http-errors';
 
-// Утиліта для хешування паролю
 export const hashPassword = async (password) => {
   return bcrypt.hash(password, 10);
 };
 
-// Утиліта для верифікації токену
 export const verifyToken = (token, secret) => {
   try {
     return jwt.verify(token, secret);

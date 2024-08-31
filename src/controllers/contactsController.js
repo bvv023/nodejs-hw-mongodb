@@ -1,6 +1,5 @@
 // src/controllers/contactsController.js
 import createError from 'http-errors';
-import Contact from '../models/contact.js';
 import { getAllContacts, getContactById, addContact, updateContactById, deleteContactById } from '../services/contacts.js';
 import getPhotoURL from '../utils/getPhotoURL.js';
 import ctrlWrapper from '../utils/ctrlWrapper.js';
@@ -55,6 +54,11 @@ const createContact = async (req, res, next) => {
 };
 
 const updateContact = async (req, res, next) => {
+  const contactExists = await getContactById(req.params.contactId);
+  if (!contactExists || contactExists.userId.toString() !== req.user._id.toString()) {
+    throw createError(404, 'Contact not found or unauthorized access');
+  }
+
   const photoUrl = await getPhotoURL(req.file);
   const updatedData = { ...req.body };
   if (photoUrl) {
@@ -63,13 +67,27 @@ const updateContact = async (req, res, next) => {
 
   const updatedContact = await updateContactById(req.params.contactId, updatedData);
 
-  if (!updatedContact) {
-    throw createError(404, 'Contact not found or unauthorized access');
-  }
-
   res.status(200).json({
     status: 200,
     message: 'Successfully updated the contact!',
+    data: updatedContact,
+  });
+};
+
+const replaceContact = async (req, res, next) => {
+  const contactExists = await getContactById(req.params.contactId);
+  if (!contactExists || contactExists.userId.toString() !== req.user._id.toString()) {
+    throw createError(404, 'Contact not found or unauthorized access');
+  }
+
+  const photoUrl = await getPhotoURL(req.file);
+  const updatedData = { ...req.body, photo: photoUrl || '' };
+
+  const updatedContact = await updateContactById(req.params.contactId, updatedData);
+
+  res.status(200).json({
+    status: 200,
+    message: 'Successfully replaced the contact!',
     data: updatedContact,
   });
 };
@@ -89,5 +107,6 @@ export default {
   getContact: ctrlWrapper(getContact),
   createContact: ctrlWrapper(createContact),
   updateContact: ctrlWrapper(updateContact),
+  replaceContact: ctrlWrapper(replaceContact),
   deleteContact: ctrlWrapper(deleteContact),
 };

@@ -9,7 +9,6 @@ import { sendEmail } from '../utils/sendMail.js';
 import fs from 'fs';
 import path from 'path';
 
-// Логування SMTP налаштувань
 console.log(`SMTP Configuration: Host - ${SMTP.SMTP_HOST}, Port - ${SMTP.SMTP_PORT}`);
 
 const registerUser = async ({ name, email, password }) => {
@@ -83,15 +82,12 @@ const sendResetEmailService = async (email) => {
     throw createError(404, 'User not found!');
   }
 
-  // Додаємо userId в токен
   const resetToken = jwt.sign({ email, userId: user._id }, process.env.JWT_SECRET, { expiresIn: '5m' });
   const resetLink = `${APP_DOMAIN}/reset-password?token=${resetToken}`;
 
-  // Зчитуємо HTML шаблон
   const templatePath = path.join(process.cwd(), 'src', 'templates', 'reset-password-email.html');
   let emailHtml = fs.readFileSync(templatePath, 'utf8');
 
-  // Заміна змінних у шаблоні
   emailHtml = emailHtml.replace('{{name}}', user.name);
   emailHtml = emailHtml.replace('{{link}}', resetLink);
 
