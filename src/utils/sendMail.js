@@ -12,7 +12,7 @@ if (!process.env.SMTP_HOST || !port || !process.env.SMTP_USER || !process.env.SM
   transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
     port,
-    secure: false, // використовується STARTTLS
+    secure: false,
     auth: {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASSWORD,
@@ -20,11 +20,10 @@ if (!process.env.SMTP_HOST || !port || !process.env.SMTP_USER || !process.env.SM
     tls: {
       rejectUnauthorized: false,
     },
-    family: 4,  // Використання тільки IPv4
-    localAddress: '0.0.0.0',  // Додано для явного задання адреси
+    family: 4,
+    localAddress: '0.0.0.0',
   });
 
-  // Перевірка з'єднання з SMTP сервером
   transporter.verify(function (error, success) {
     if (error) {
       console.error('SMTP connection error:', error);
@@ -33,7 +32,6 @@ if (!process.env.SMTP_HOST || !port || !process.env.SMTP_USER || !process.env.SM
     }
   });
 
-  // Додано новий код для перевірки підключення до SMTP сервера
   const client = net.createConnection({ host: process.env.SMTP_HOST, port }, () => {
     console.log('Connected to SMTP server!');
     client.end();
