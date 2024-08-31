@@ -7,9 +7,9 @@ const envPath = path.resolve(process.cwd(), '.env');
 
 if (fs.existsSync(envPath)) {
   dotenv.config({ path: envPath });
-  console.log('ENV variables successfully loaded from', envPath);
+  console.log(`ENV variables successfully loaded from ${envPath}`);
 } else {
-  console.error('Could not find .env file at', envPath);
+  console.error(`Could not find .env file at ${envPath}`);
   process.exit(1);
 }
 
