@@ -1,20 +1,15 @@
 // src/utils/env.js
 import dotenv from 'dotenv';
-import path from 'path';
-import fs from 'fs';
 
-const envPath = path.resolve('.env');
+dotenv.config();
 
-if (fs.existsSync(envPath)) {
-  dotenv.config({ path: envPath });
-  console.log(`ENV variables successfully loaded from ${envPath}`);
-} else {
-  console.error(`Could not find .env file at ${envPath}`);
-  process.exit(1);
-}
+const env = (name, defaultValue) => {
+  const value = process.env[name];
+  if (value) return value;
 
-const env = (key, defaultValue = undefined) => {
-  return process.env[key] || defaultValue;
+  if (defaultValue) return defaultValue;
+
+  throw new Error(`${name} variable doesn't exist`);
 };
 
 export default env;
