@@ -8,6 +8,7 @@ import { SMTP, APP_DOMAIN } from '../constants/index.js';
 import { sendEmail } from '../utils/sendMail.js';
 import fs from 'fs';
 import path from 'path';
+import { getFullNameFromGoogleTokenPayload, validateCode } from '../utils/googleOAuth2.js';
 
 console.log(`SMTP Configuration: Host - ${SMTP.SMTP_HOST}, Port - ${SMTP.SMTP_PORT}`);
 
@@ -132,6 +133,33 @@ const resetPasswordService = async (token, newPassword) => {
   }
 };
 
+export const loginOrSignupWithGoogle = async (code) => {
+  const loginTicket = await validateCode(code);
+  const payload = loginTicket.getPayload();
+  if (!payload) throw createError(401, 'Unauthorized');
+
+  let user = await User.findOne({ email: payload.email });
+  if (!user) {
+    const password = await bcrypt.hash(payload.sub, 10); // Використовуйте sub як тимчасовий пароль
+    user = await User.create({
+      email: payload.email,
+      name: getFullNameFromGoogleTokenPayload(payload),
+      password,
+    });
+  }
+
+  const accessToken = jwt.sign({ userId: user._id }, process.env.JWT_ACCESS_SECRET, { expiresIn: '15m' });
+  const refreshToken = jwt.sign({ userId: user._id }, process.env.JWT_REFRESH_SECRET, { expiresIn: '30d' });
+
+  const session = await Session.create({
+    userId: user._id,
+    accessToken,
+    refreshToken,
+    accessTokenValidUntil: new Date(Date.now() + 15 * 60 * 1000),
+    refreshTokenValidUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+  });
+
+  return { accessToken, refreshToken, sessionId: session._id };
+};
+
 export { registerUser, loginUser, refreshSession, logoutUser, sendResetEmailService, resetPasswordService };
-
-

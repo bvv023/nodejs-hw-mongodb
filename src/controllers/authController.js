@@ -1,6 +1,7 @@
 // src/controllers/authController.js
 import createError from 'http-errors';
-import { registerUser, loginUser, refreshSession, logoutUser, sendResetEmailService, resetPasswordService } from '../services/authService.js';
+import { registerUser, loginUser, refreshSession, logoutUser, sendResetEmailService, resetPasswordService, loginOrSignupWithGoogle as loginOrSignupWithGoogleService } from '../services/authService.js';
+import { generateAuthUrl } from '../utils/googleOAuth2.js';
 
 export const register = async (req, res, next) => {
   try {
@@ -96,6 +97,31 @@ export const resetPassword = async (req, res, next) => {
       status: 200,
       message: 'Password has been successfully reset.',
       data: {},
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getGoogleOAuthUrlController = async (req, res) => {
+  const url = generateAuthUrl();
+  res.json({
+    status: 200,
+    message: 'Successfully get Google OAuth url!',
+    data: {
+      url,
+    },
+  });
+};
+
+export const loginOrSignupWithGoogle = async (req, res, next) => {
+  try {
+    const { code } = req.body;
+    const result = await loginOrSignupWithGoogleService(code);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully logged in or signed up with Google!',
+      data: result,
     });
   } catch (error) {
     next(error);
