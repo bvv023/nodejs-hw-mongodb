@@ -7,6 +7,7 @@ import MongoStore from 'connect-mongo';
 import cookieParser from 'cookie-parser';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
+import path from 'path';
 import contactsRouter from './routers/contactsRouter.js';
 import authRouter from './routers/authRouter.js';
 import errorHandler from './middlewares/errorHandler.js';
@@ -35,7 +36,7 @@ const setupServer = () => {
     },
   }));
 
-  const swaggerDocument = YAML.load('./docs/openapi.yaml');
+  const swaggerDocument = YAML.load(path.join(process.cwd(), './docs/openapi.yaml'));
 
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
@@ -52,7 +53,7 @@ const setupServer = () => {
 
   const PORT = env('PORT', 3000);
   app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`Server is running on port ${PORT} in ${env('NODE_ENV', 'development')} mode`);
   });
 };
 
