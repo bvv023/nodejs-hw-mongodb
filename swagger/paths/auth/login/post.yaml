@@ -51,6 +51,6 @@ responses:
                   type: string
                   example: ksIErcdA0oBwLX79f4bPcYXWKyEX/hcN6OcDU1Ll
   '400':
-    $ref: ../../../components/responses/400.yaml
+    $ref: '../../../components/responses/400.yaml'
   '404':
-    $ref: ../../../components/responses/auth/404.yaml
+    $ref: '../../../components/responses/auth/404.yaml'
