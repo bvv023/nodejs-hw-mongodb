@@ -6,24 +6,33 @@ import User from '../models/user.js';
 const authenticate = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      throw createError(401, 'No token provided');
-    }
+    const refreshToken = req.cookies.refreshToken;
+    const userId = req.cookies.userId;
 
-    const token = authHeader.split(' ')[1];
-
-    try {
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.split(' ')[1];
       const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
       const user = await User.findById(decoded.userId);
+
       if (!user) {
         throw createError(401, 'Invalid token');
       }
+
       req.user = user;
-      next();
-    } catch (err) {
-      console.error('Token verification failed:', err);
-      throw createError(401, 'Access token expired or invalid');
+    } else if (refreshToken && userId) {
+      const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+      const user = await User.findById(userId);
+
+      if (!user || decoded.userId !== user.id) {
+        throw createError(401, 'Invalid refresh token');
+      }
+
+      req.user = user;
+    } else {
+      throw createError(401, 'No token provided');
     }
+
+    next();
   } catch (error) {
     console.error('Authentication error:', error);
     next(error);

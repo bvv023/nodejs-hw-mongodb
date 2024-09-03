@@ -8,9 +8,10 @@ import { SMTP, APP_DOMAIN } from '../constants/index.js';
 import { sendEmail } from '../utils/sendMail.js';
 import fs from 'fs';
 import path from 'path';
-import { getFullNameFromGoogleTokenPayload, validateCode } from '../utils/googleOAuth2.js';
-
-console.log(`SMTP Configuration: Host - ${SMTP.SMTP_HOST}, Port - ${SMTP.SMTP_PORT}`);
+import {
+  getFullNameFromGoogleTokenPayload,
+  validateCode,
+} from '../utils/googleOAuth2.js';
 
 const registerUser = async ({ name, email, password }) => {
   const existingUser = await User.findOne({ email });
@@ -35,8 +36,16 @@ const loginUser = async ({ email, password }) => {
     throw createError(401, 'Invalid email or password');
   }
 
-  const accessToken = jwt.sign({ userId: user._id }, process.env.JWT_ACCESS_SECRET, { expiresIn: '15m' });
-  const refreshToken = jwt.sign({ userId: user._id }, process.env.JWT_REFRESH_SECRET, { expiresIn: '30d' });
+  const accessToken = jwt.sign(
+    { userId: user._id },
+    process.env.JWT_ACCESS_SECRET,
+    { expiresIn: '15m' }
+  );
+  const refreshToken = jwt.sign(
+    { userId: user._id },
+    process.env.JWT_REFRESH_SECRET,
+    { expiresIn: '30d' }
+  );
 
   const session = await Session.create({
     userId: user._id,
@@ -57,8 +66,16 @@ const refreshSession = async (refreshToken) => {
     throw createError(403, 'Invalid refresh token');
   }
 
-  const newAccessToken = jwt.sign({ userId: decoded.userId }, process.env.JWT_ACCESS_SECRET, { expiresIn: '15m' });
-  const newRefreshToken = jwt.sign({ userId: decoded.userId }, process.env.JWT_REFRESH_SECRET, { expiresIn: '30d' });
+  const newAccessToken = jwt.sign(
+    { userId: decoded.userId },
+    process.env.JWT_ACCESS_SECRET,
+    { expiresIn: '15m' }
+  );
+  const newRefreshToken = jwt.sign(
+    { userId: decoded.userId },
+    process.env.JWT_REFRESH_SECRET,
+    { expiresIn: '30d' }
+  );
 
   session.accessToken = newAccessToken;
   session.refreshToken = newRefreshToken;
@@ -83,10 +100,19 @@ const sendResetEmailService = async (email) => {
     throw createError(404, 'User not found!');
   }
 
-  const resetToken = jwt.sign({ email, userId: user._id }, process.env.JWT_SECRET, { expiresIn: '5m' });
+  const resetToken = jwt.sign(
+    { email, userId: user._id },
+    process.env.JWT_SECRET,
+    { expiresIn: '5m' }
+  );
   const resetLink = `${APP_DOMAIN}/reset-password?token=${resetToken}`;
 
-  const templatePath = path.join(process.cwd(), 'src', 'templates', 'reset-password-email.html');
+  const templatePath = path.join(
+    process.cwd(),
+    'src',
+    'templates',
+    'reset-password-email.html'
+  );
   let emailHtml = fs.readFileSync(templatePath, 'utf8');
 
   emailHtml = emailHtml.replace('{{name}}', user.name);
@@ -140,7 +166,7 @@ export const loginOrSignupWithGoogle = async (code) => {
 
   let user = await User.findOne({ email: payload.email });
   if (!user) {
-    const password = await bcrypt.hash(payload.sub, 10); // Використовуйте sub як тимчасовий пароль
+    const password = await bcrypt.hash(payload.sub, 10);
     user = await User.create({
       email: payload.email,
       name: getFullNameFromGoogleTokenPayload(payload),
@@ -148,8 +174,16 @@ export const loginOrSignupWithGoogle = async (code) => {
     });
   }
 
-  const accessToken = jwt.sign({ userId: user._id }, process.env.JWT_ACCESS_SECRET, { expiresIn: '15m' });
-  const refreshToken = jwt.sign({ userId: user._id }, process.env.JWT_REFRESH_SECRET, { expiresIn: '30d' });
+  const accessToken = jwt.sign(
+    { userId: user._id },
+    process.env.JWT_ACCESS_SECRET,
+    { expiresIn: '15m' }
+  );
+  const refreshToken = jwt.sign(
+    { userId: user._id },
+    process.env.JWT_REFRESH_SECRET,
+    { expiresIn: '30d' }
+  );
 
   const session = await Session.create({
     userId: user._id,
@@ -162,4 +196,12 @@ export const loginOrSignupWithGoogle = async (code) => {
   return { accessToken, refreshToken, sessionId: session._id };
 };
 
-export { registerUser, loginUser, refreshSession, logoutUser, sendResetEmailService, resetPasswordService };
+export {
+  registerUser,
+  loginUser,
+  refreshSession,
+  logoutUser,
+  sendResetEmailService,
+  resetPasswordService,
+};
+

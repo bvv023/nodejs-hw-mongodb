@@ -18,4 +18,3 @@ export const updateContactSchema = Joi.object({
   contactType: Joi.string().valid('work', 'home', 'personal').optional(),
   photo: Joi.string().optional(),
 }).or('name', 'phoneNumber', 'email', 'isFavourite', 'contactType', 'photo');
-

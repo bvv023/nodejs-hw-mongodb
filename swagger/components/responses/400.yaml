@@ -1,5 +1,5 @@
-# swagger/components/responses/401.yaml
-description: Unauthorized
+# swagger/components/responses/400.yaml
+description: Bad request
 content:
   application/json:
     schema:
@@ -11,13 +11,13 @@ content:
       properties:
         status:
           type: integer
-          example: 401
+          example: 400
         message:
           type: string
-          example: Unauthorized
+          example: Bad request
         data:
           type: object
           properties:
             message:
               type: string
-              example: Unauthorized
+              example: Bad request

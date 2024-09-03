@@ -1,6 +1,14 @@
 // src/controllers/authController.js
 import createError from 'http-errors';
-import { registerUser, loginUser, refreshSession, logoutUser, sendResetEmailService, resetPasswordService, loginOrSignupWithGoogle as loginOrSignupWithGoogleService } from '../services/authService.js';
+import {
+  registerUser,
+  loginUser,
+  refreshSession,
+  logoutUser,
+  sendResetEmailService,
+  resetPasswordService,
+  loginOrSignupWithGoogle as loginOrSignupWithGoogleService,
+} from '../services/authService.js';
 import { generateAuthUrl } from '../utils/googleOAuth2.js';
 
 export const register = async (req, res, next) => {
@@ -39,15 +47,11 @@ export const login = async (req, res, next) => {
 
 export const refresh = async (req, res, next) => {
   try {
-    console.log('Refresh endpoint hit');
-    console.log('Cookies:', req.cookies);
-
     if (!req.cookies) {
       throw createError(403, 'No cookies found');
     }
 
     const refreshToken = req.cookies.refreshToken;
-    console.log('Received refreshToken:', refreshToken);
 
     if (!refreshToken) {
       throw createError(403, 'Refresh token not found');

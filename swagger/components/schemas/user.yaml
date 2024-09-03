@@ -1,0 +1,33 @@
+# swagger/components/shenas/user.yaml
+type: object
+required:
+  - _id
+  - name
+  - email
+  - updatedAt
+  - createdAt
+properties:
+  _id:
+    description: User id
+    type: string
+    example: 65ca67e7ae7f10c88b598384
+  name:
+    description: User's name
+    type: string
+    example: Gareth Walker
+  email:
+    description: User's email
+    type: string
+    example: test@gmail.com
+  password:
+    description: User's password
+    type: string
+    example: '12345678'
+  updatedAt:
+    description: User last update
+    type: string
+    format: date-time
+  createdAt:
+    description: User created at
+    type: string
+    format: date-time
