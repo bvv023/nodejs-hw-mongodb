@@ -7,47 +7,52 @@ import createHttpError from 'http-errors';
 
 const PATH_JSON = path.join(process.cwd(), 'google-oauth.json');
 
+let oauthConfig;
+
 const loadOAuthConfig = async () => {
   try {
     const fileContent = await fs.readFile(PATH_JSON, 'utf8');
-    const oauthConfig = JSON.parse(fileContent);
-
-    if (!oauthConfig || !oauthConfig.web || !oauthConfig.web.redirect_uris || oauthConfig.web.redirect_uris.length === 0) {
-      throw createHttpError(500, 'Invalid Google OAuth configuration');
-    }
-
-    return oauthConfig;
+    oauthConfig = JSON.parse(fileContent);
+    console.log('Google OAuth configuration loaded successfully');
   } catch (error) {
     console.error('Failed to read Google OAuth configuration file:', error);
     throw createHttpError(500, 'Google OAuth configuration file missing or invalid');
   }
 };
 
+await loadOAuthConfig();
+
 const googleOAuthClient = new OAuth2Client({
   clientId: env('GOOGLE_AUTH_CLIENT_ID'),
   clientSecret: env('GOOGLE_AUTH_CLIENT_SECRET'),
-  redirectUri: (await loadOAuthConfig()).web.redirect_uris[0],
+  redirectUri: oauthConfig.web.redirect_uris[0],
 });
 
-console.log('GOOGLE_AUTH_CLIENT_ID:', env('GOOGLE_AUTH_CLIENT_ID'));
-console.log('GOOGLE_AUTH_CLIENT_SECRET:', env('GOOGLE_AUTH_CLIENT_SECRET'));
-
-export const generateAuthUrl = () =>
-  googleOAuthClient.generateAuthUrl({
+export const generateAuthUrl = () => {
+  const authUrl = googleOAuthClient.generateAuthUrl({
     scope: [
       'https://www.googleapis.com/auth/userinfo.email',
       'https://www.googleapis.com/auth/userinfo.profile',
     ],
   });
+  console.log('Generated Google Auth URL:', authUrl);
+  return authUrl;
+};
 
 export const validateCode = async (code) => {
-  const response = await googleOAuthClient.getToken(code);
-  if (!response.tokens.id_token) throw createHttpError(401, 'Unauthorized');
+  try {
+    const response = await googleOAuthClient.getToken(code);
+    if (!response.tokens.id_token) throw createHttpError(401, 'Unauthorized');
 
-  const ticket = await googleOAuthClient.verifyIdToken({
-    idToken: response.tokens.id_token,
-  });
-  return ticket;
+    const ticket = await googleOAuthClient.verifyIdToken({
+      idToken: response.tokens.id_token,
+    });
+    console.log('Google OAuth token validated successfully');
+    return ticket;
+  } catch (error) {
+    console.error('Error during token validation:', error);
+    throw error;
+  }
 };
 
 export const getFullNameFromGoogleTokenPayload = (payload) => {
@@ -58,5 +63,6 @@ export const getFullNameFromGoogleTokenPayload = (payload) => {
     fullName = payload.given_name;
   }
 
+  console.log('Extracted full name from Google token payload:', fullName);
   return fullName;
 };
