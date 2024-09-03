@@ -8,6 +8,7 @@ security:
   - bearerAuth: []
 requestBody:
   description: Contact to add
+  required: true
   content:
     multipart/form-data:
       schema:
