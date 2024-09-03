@@ -1,6 +1,12 @@
 // src/controllers/contactsController.js
 import createError from 'http-errors';
-import { getAllContacts, getContactById, addContact, updateContactById, deleteContactById } from '../services/contacts.js';
+import {
+  getAllContacts,
+  getContactById,
+  addContact,
+  updateContactById,
+  deleteContactById,
+} from '../services/contacts.js';
 import getPhotoURL from '../utils/getPhotoURL.js';
 import ctrlWrapper from '../utils/ctrlWrapper.js';
 
@@ -12,7 +18,7 @@ const getContacts = async (req, res, next) => {
     perPage: Number(perPage),
     sortBy,
     sortOrder,
-    filterOptions: { userId: req.user._id }
+    filterOptions: { userId: req.user._id },
   };
 
   if (type) {
@@ -93,7 +99,7 @@ const replaceContact = async (req, res, next) => {
 };
 
 const deleteContact = async (req, res, next) => {
-  const contact = await deleteContactById(req.params.contactId, req.user._id);
+  const contact = await deleteContactById(req.params.contactId);
 
   if (!contact) {
     throw createError(404, 'Contact not found or unauthorized access');

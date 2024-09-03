@@ -1,22 +1,25 @@
-# swagger/paths/contacts/post.yaml
+# swagger/paths/contacts/{contactId}/patch.yaml
 tags:
   - Contacts
-summary: Add contact
-description: Adds contacts and returns it
-operationId: createContact
+summary: Update contact by id
+description: Updates and returns contact by id
+operationId: updateContact
 security:
   - bearerAuth: []
+parameters:
+  - name: contactId
+    in: path
+    description: Contact id
+    required: true
+    schema:
+      type: string
+      example: 65ca67e7ae7f10c88b598384
 requestBody:
-  description: Contact to add
+  description: Fields to update
   content:
-    multipart/form-data:
+    multipart-form-data:
       schema:
         type: object
-        required:
-          - name
-          - phoneNumber
-          - email
-          - contactType
         properties:
           name:
             description: Contact's name
@@ -63,12 +66,14 @@ responses:
               example: 200
             message:
               type: string
-              example: Successfully created a contact!
+              example: Successfully patched contact!
             data:
-              $ref: ../../components/schemas/contact.yaml
+              $ref: ../../../components/schemas/contact.yaml
   '400':
-    $ref: '../../components/responses/400.yaml'
+    $ref: ../../../components/responses/400.yaml
   '401':
-    $ref: '../../components/responses/401.yaml'
+    $ref: ../../../components/responses/401.yaml
   '403':
-    $ref: '../../components/responses/403.yaml'
+    $ref: ../../../components/responses/403.yaml
+  '404':
+    $ref: '../../../components/responses/contacts/404.yaml'

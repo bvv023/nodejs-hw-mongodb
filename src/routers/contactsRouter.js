@@ -1,16 +1,34 @@
 // src/routers/contactsRouter.js
 import express from 'express';
 import authenticate from '../middlewares/authenticate.js';
+import validateBody from '../middlewares/validateBody.js';
+import {
+  createContactSchema,
+  updateContactSchema,
+} from '../validation/contactValidation.js';
 import contactsController from '../controllers/contactsController.js';
-import { upload } from '../middlewares/multer.js';
+
+const {
+  getContacts,
+  getContact,
+  createContact,
+  updateContact,
+  deleteContact,
+} = contactsController;
 
 const router = express.Router();
 
-router.get('/', authenticate, contactsController.getContacts);
-router.get('/:contactId', authenticate, contactsController.getContact);
-router.post('/', authenticate, upload.single('photo'), contactsController.createContact);
-router.put('/:contactId', authenticate, upload.single('photo'), contactsController.replaceContact);
-router.patch('/:contactId', authenticate, upload.single('photo'), contactsController.updateContact);
-router.delete('/:contactId', authenticate, contactsController.deleteContact);
+router.use(authenticate);
+
+router
+  .route('/')
+  .get(getContacts)
+  .post(validateBody(createContactSchema), createContact);
+
+router
+  .route('/:contactId')
+  .get(getContact)
+  .patch(validateBody(updateContactSchema), updateContact)
+  .delete(deleteContact);
 
 export default router;

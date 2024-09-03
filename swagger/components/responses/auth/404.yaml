@@ -1,5 +1,5 @@
-# swagger/components/responses/401.yaml
-description: Unauthorized
+# swagger/responses/auth/404.yaml
+description: User not found
 content:
   application/json:
     schema:
@@ -11,13 +11,13 @@ content:
       properties:
         status:
           type: integer
-          example: 401
+          example: 404
         message:
           type: string
-          example: Unauthorized
+          example: User not found
         data:
           type: object
           properties:
             message:
               type: string
-              example: Unauthorized
+              example: User not found

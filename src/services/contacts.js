@@ -3,41 +3,50 @@ import Contact from '../models/contact.js';
 
 const getAllContacts = async ({ page, perPage, sortBy, sortOrder, filterOptions }) => {
   const skip = (page - 1) * perPage;
-  const sortOptions = { [sortBy]: sortOrder === 'asc' ? 1 : -1 };
-
   const totalItems = await Contact.countDocuments(filterOptions);
-  const totalPages = Math.ceil(totalItems / perPage);
 
   const contacts = await Contact.find(filterOptions)
-    .sort(sortOptions)
+    .sort({ [sortBy]: sortOrder })
     .skip(skip)
     .limit(perPage);
 
   return {
-    data: contacts,
+    contacts,
     page,
     perPage,
     totalItems,
-    totalPages,
+    totalPages: Math.ceil(totalItems / perPage),
+    hasNextPage: page * perPage < totalItems,
     hasPreviousPage: page > 1,
-    hasNextPage: page < totalPages,
   };
 };
 
-const getContactById = async (id) => {
-  return await Contact.findById(id);
+const getContactById = async (contactId) => {
+  const contact = await Contact.findById(contactId);
+  return contact;
 };
 
-const addContact = async (data) => {
-  return await Contact.create(data);
+const addContact = async (contactData) => {
+  const newContact = await Contact.create(contactData);
+  return newContact;
 };
 
-const updateContactById = async (id, data) => {
-  return await Contact.findByIdAndUpdate(id, data, { new: true });
+const updateContactById = async (contactId, updateData) => {
+  const updatedContact = await Contact.findByIdAndUpdate(contactId, updateData, {
+    new: true,
+  });
+  return updatedContact;
 };
 
-const deleteContactById = async (id) => {
-  return await Contact.findByIdAndDelete(id);
+const deleteContactById = async (contactId, userId) => {
+  const contact = await Contact.findOneAndDelete({ _id: contactId, userId });
+  return contact;
 };
 
-export { getAllContacts, getContactById, addContact, updateContactById, deleteContactById };
+export {
+  getAllContacts,
+  getContactById,
+  addContact,
+  updateContactById,
+  deleteContactById,
+};
