@@ -59,3 +59,21 @@ components:
       type: apiKey
       in: cookie
       name: userId
+  schemas:
+    contact:
+      $ref: '../swagger/components/schemas/contact.yaml'
+    user:
+      $ref: '../swagger/components/schemas/user.yaml'
+  responses:
+    400:
+      $ref: '../swagger/components/responses/400.yaml'
+    401:
+      $ref: '../swagger/components/responses/401.yaml'
+    403:
+      $ref: '../swagger/components/responses/403.yaml'
+    404:
+      $ref: '../swagger/components/responses/contacts/404.yaml'
+    409:
+      $ref: '../swagger/components/responses/auth/409.yaml'
+    404-2:
+      $ref: '../swagger/components/responses/auth/404.yaml'
