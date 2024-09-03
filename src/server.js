@@ -23,18 +23,20 @@ const setupServer = () => {
   app.use(express.json());
   app.use(cookieParser());
 
-  app.use(session({
-    secret: env('SESSION_SECRET', 'mySuperSecret'),
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({
-      mongoUrl: `mongodb+srv://${env('MONGODB_USER')}:${env('MONGODB_PASSWORD')}@${env('MONGODB_URL')}/${env('MONGODB_DB')}`,
-    }),
-    cookie: {
-      maxAge: 1000 * 60 * 60 * 24,
-      httpOnly: true,
-    },
-  }));
+  app.use(
+    session({
+      secret: env('SESSION_SECRET', 'mySuperSecret'),
+      resave: false,
+      saveUninitialized: false,
+      store: MongoStore.create({
+        mongoUrl: `mongodb+srv://${env('MONGODB_USER')}:${env('MONGODB_PASSWORD')}@${env('MONGODB_URL')}/${env('MONGODB_DB')}`,
+      }),
+      cookie: {
+        maxAge: 1000 * 60 * 60 * 24,
+        httpOnly: true,
+      },
+    })
+  );
 
   const swaggerDocument = YAML.load(path.join(process.cwd(), './docs/openapi.yaml'));
 
@@ -48,6 +50,7 @@ const setupServer = () => {
   app.use('/auth', authRouter);
   app.use('/uploads', express.static(UPLOAD_DIR));
 
+  // Route not found handler
   app.use(notFoundHandler);
   app.use(errorHandler);
 

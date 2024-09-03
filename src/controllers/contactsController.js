@@ -116,3 +116,4 @@ export default {
   replaceContact: ctrlWrapper(replaceContact),
   deleteContact: ctrlWrapper(deleteContact),
 };
+
