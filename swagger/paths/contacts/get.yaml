@@ -43,7 +43,7 @@ parameters:
       type: string
       enum: ['asc', 'desc']
       example: 'asc'
-    description: All contact's fields can be mentioned. Default value - _id
+    description: Sorting order for contacts, default is by _id
 responses:
   '200':
     description: OK

@@ -48,7 +48,7 @@ export const validateCode = async (code) => {
       idToken: response.tokens.id_token,
     });
     console.log('Google OAuth token validated successfully');
-    return ticket;
+    return ticket.getPayload();
   } catch (error) {
     console.error('Error during token validation:', error);
     throw error;

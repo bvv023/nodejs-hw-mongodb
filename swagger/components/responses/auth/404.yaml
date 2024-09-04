@@ -1,4 +1,4 @@
-# swagger/responses/auth/404.yaml
+# swagger/components/responses/auth/404.yaml
 description: User not found
 content:
   application/json:
@@ -7,7 +7,6 @@ content:
       required:
         - status
         - message
-        - data
       properties:
         status:
           type: integer
@@ -15,9 +14,3 @@ content:
         message:
           type: string
           example: User not found
-        data:
-          type: object
-          properties:
-            message:
-              type: string
-              example: User not found

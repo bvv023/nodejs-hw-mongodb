@@ -14,7 +14,7 @@
       "url": "http://localhost:3000"
     },
     {
-      "url": "https://hw7-swagger-2sk8.onrender.com"
+      "url": "https://hw7-swagger-5mc7.onrender.com"
     }
   ],
   "tags": [
@@ -70,25 +70,25 @@
             "name": "email",
             "in": "query",
             "schema": {
-              "type": "string"
-            },
-            "example": "test@gmail.com"
+              "type": "string",
+              "example": "test@gmail.com"
+            }
           },
           {
             "name": "isFavourite",
             "in": "query",
             "schema": {
-              "type": "boolean"
-            },
-            "example": true
+              "type": "boolean",
+              "example": true
+            }
           },
           {
             "name": "contactType",
             "in": "query",
             "schema": {
-              "type": "string"
-            },
-            "example": "home"
+              "type": "string",
+              "example": "home"
+            }
           },
           {
             "name": "sortOrder",
@@ -101,7 +101,7 @@
               ],
               "example": "asc"
             },
-            "description": "All contact's fields can be mentioned. Default value - _id"
+            "description": "Sorting order for contacts, default is by _id"
           }
         ],
         "responses": {
@@ -170,18 +170,19 @@
         "tags": [
           "Contacts"
         ],
-        "summary": "Add contact",
-        "description": "Adds contacts and returns it",
-        "operationId": "createContact",
+        "summary": "Add a new contact",
+        "description": "Adds a new contact and returns it",
+        "operationId": "addContact",
         "security": [
           {
             "bearerAuth": []
           }
         ],
         "requestBody": {
-          "description": "Contact to add",
+          "description": "Contact data to add",
+          "required": true,
           "content": {
-            "multipart/form-data": {
+            "application/json": {
               "schema": {
                 "type": "object",
                 "required": [
@@ -192,27 +193,23 @@
                 ],
                 "properties": {
                   "name": {
-                    "description": "Contact's name",
                     "type": "string",
-                    "example": "Allan Walker",
-                    "minLength": 3,
-                    "maxLength": 20
+                    "description": "Contact's name",
+                    "example": "Allan Walker"
                   },
                   "phoneNumber": {
-                    "description": "Contact's phone number",
                     "type": "string",
-                    "example": "123-123-123",
-                    "minLength": 3,
-                    "maxLength": 20
+                    "description": "Contact's phone number",
+                    "example": "123-456-7890"
                   },
                   "email": {
                     "type": "string",
-                    "example": "test@gmail.com",
-                    "minLength": 3,
-                    "maxLength": 20
+                    "description": "Contact's email",
+                    "example": "allan@example.com"
                   },
                   "isFavourite": {
                     "type": "boolean",
+                    "description": "Whether the contact is marked as favourite",
                     "example": true
                   },
                   "contactType": {
@@ -222,12 +219,8 @@
                       "home",
                       "personal"
                     ],
-                    "example": "home",
-                    "minLength": 3,
-                    "maxLength": 20
-                  },
-                  "photo": {
-                    "type": "string"
+                    "description": "Type of contact",
+                    "example": "home"
                   }
                 }
               }
@@ -236,29 +229,11 @@
         },
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Contact successfully created",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "required": [
-                    "status",
-                    "message",
-                    "data"
-                  ],
-                  "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 200
-                    },
-                    "message": {
-                      "type": "string",
-                      "example": "Successfully created a contact!"
-                    },
-                    "data": {
-                      "$ref": "#/components/schemas/contact"
-                    }
-                  }
+                  "$ref": "#/components/schemas/contact"
                 }
               }
             }
@@ -268,9 +243,6 @@
           },
           "401": {
             "$ref": "#/components/responses/401"
-          },
-          "403": {
-            "$ref": "#/components/responses/403"
           }
         }
       }
@@ -281,8 +253,8 @@
           "Contacts"
         ],
         "summary": "Get contact by id",
-        "description": "Returns single contact",
-        "operationId": "getContact",
+        "description": "Returns a single contact by its ID",
+        "operationId": "getContactById",
         "security": [
           {
             "bearerAuth": []
@@ -292,8 +264,8 @@
           {
             "name": "contactId",
             "in": "path",
-            "description": "Contact id",
             "required": true,
+            "description": "The ID of the contact",
             "schema": {
               "type": "string",
               "example": "65ca67e7ae7f10c88b598384"
@@ -302,16 +274,11 @@
         ],
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Successfully retrieved contact",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": [
-                    "status",
-                    "message",
-                    "data"
-                  ],
                   "properties": {
                     "status": {
                       "type": "integer",
@@ -319,7 +286,7 @@
                     },
                     "message": {
                       "type": "string",
-                      "example": "Successfully found contact with id 65ca67e7ae7f10c88b598384!"
+                      "example": "Contact retrieved successfully"
                     },
                     "data": {
                       "$ref": "#/components/schemas/contact"
@@ -334,9 +301,6 @@
           },
           "401": {
             "$ref": "#/components/responses/401"
-          },
-          "403": {
-            "$ref": "#/components/responses/403"
           },
           "404": {
             "$ref": "#/components/responses/404"
@@ -369,8 +333,9 @@
         ],
         "requestBody": {
           "description": "Fields to update",
+          "required": true,
           "content": {
-            "multipart-form-data": {
+            "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
@@ -436,7 +401,7 @@
                     },
                     "message": {
                       "type": "string",
-                      "example": "Successfully patched contact!"
+                      "example": "Successfully updated contact!"
                     },
                     "data": {
                       "$ref": "#/components/schemas/contact"
@@ -505,12 +470,13 @@
         "tags": [
           "Auth"
         ],
-        "summary": "Register user",
-        "description": "Registers user and returns it",
+        "summary": "Register a new user",
+        "description": "Registers a new user and returns the created user",
         "operationId": "registerUser",
         "security": [],
         "requestBody": {
-          "description": "User data",
+          "description": "User registration data",
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -522,19 +488,19 @@
                 ],
                 "properties": {
                   "name": {
-                    "description": "User's name",
                     "type": "string",
-                    "example": "Gareth Walker"
+                    "description": "User's name",
+                    "example": "John Doe"
                   },
                   "email": {
-                    "description": "User's email",
                     "type": "string",
-                    "example": "test@gmail.com"
+                    "description": "User's email",
+                    "example": "john@example.com"
                   },
                   "password": {
-                    "description": "User's password",
                     "type": "string",
-                    "example": "12345678"
+                    "description": "User's password",
+                    "example": "Password123!"
                   }
                 }
               }
@@ -543,29 +509,11 @@
         },
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "User successfully registered",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "required": [
-                    "status",
-                    "message",
-                    "data"
-                  ],
-                  "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 200
-                    },
-                    "message": {
-                      "type": "string",
-                      "example": "Successfully registered a user!"
-                    },
-                    "data": {
-                      "$ref": "#/components/schemas/user"
-                    }
-                  }
+                  "$ref": "#/components/schemas/user"
                 }
               }
             }
@@ -584,12 +532,13 @@
         "tags": [
           "Auth"
         ],
-        "summary": "Login user",
-        "description": "Logins user and returns it",
+        "summary": "User login",
+        "description": "Authenticates the user and returns an access token",
         "operationId": "loginUser",
         "security": [],
         "requestBody": {
-          "description": "User data",
+          "description": "User login data",
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -600,14 +549,14 @@
                 ],
                 "properties": {
                   "email": {
-                    "description": "User's email",
                     "type": "string",
-                    "example": "test@gmail.com"
+                    "description": "User's email",
+                    "example": "john@example.com"
                   },
                   "password": {
-                    "description": "User's password",
                     "type": "string",
-                    "example": "12345678"
+                    "description": "User's password",
+                    "example": "Password123!"
                   }
                 }
               }
@@ -616,16 +565,11 @@
         },
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "User successfully logged in",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "required": [
-                    "status",
-                    "message",
-                    "data"
-                  ],
                   "properties": {
                     "status": {
                       "type": "integer",
@@ -633,19 +577,79 @@
                     },
                     "message": {
                       "type": "string",
-                      "example": "Successfully logged in a user!"
+                      "example": "Login successful"
                     },
                     "data": {
                       "type": "object",
-                      "required": [
-                        "accessToken"
-                      ],
                       "properties": {
                         "accessToken": {
                           "type": "string",
-                          "example": "ksIErcdA0oBwLX79f4bPcYXWKyEX/hcN6OcDU1Ll"
+                          "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                         }
                       }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "404": {
+            "$ref": "#/components/responses/404-2"
+          }
+        }
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Send password reset email",
+        "description": "Sends an email with a link to reset the password",
+        "operationId": "sendResetEmail",
+        "security": [],
+        "requestBody": {
+          "description": "User's email",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "User's email",
+                    "example": "john@example.com"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Reset email successfully sent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Reset email sent"
                     }
                   }
                 }
@@ -661,86 +665,30 @@
         }
       }
     },
-    "/auth/refresh": {
-      "post": {
-        "tags": [
-          "Auth"
-        ],
-        "summary": "Refresh user tokens",
-        "description": "Refreshes user tokens and returns new access token",
-        "operationId": "refreshUser",
-        "security": [
-          {
-            "cookieAuthUserId": []
-          },
-          {
-            "cookieAuthRefreshToken": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": [
-                    "status",
-                    "message",
-                    "data"
-                  ],
-                  "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 200
-                    },
-                    "message": {
-                      "type": "string",
-                      "example": "Successfully refreshed a session!"
-                    },
-                    "data": {
-                      "type": "object",
-                      "required": [
-                        "accessToken"
-                      ],
-                      "properties": {
-                        "accessToken": {
-                          "type": "string",
-                          "example": "ksIErcdA0oBwLX79f4bPcYXWKyEX/hcN6OcDU1Ll"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/401"
-          }
-        }
-      }
-    },
     "/auth/send-reset-email": {
       "post": {
         "tags": [
           "Auth"
         ],
-        "summary": "Send reset password email",
-        "description": "Sends reset password email",
-        "operationId": "sendResetEmail",
+        "summary": "Send password reset email",
+        "description": "Sends an email with a link to reset the password",
+        "operationId": "sendPasswordResetEmail",
         "security": [],
         "requestBody": {
+          "description": "User's email",
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
+                "type": "object",
                 "required": [
                   "email"
                 ],
                 "properties": {
                   "email": {
                     "type": "string",
-                    "example": "test@gmail.com"
+                    "description": "User's email",
+                    "example": "john@example.com"
                   }
                 }
               }
@@ -749,15 +697,11 @@
         },
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Reset email successfully sent",
             "content": {
               "application/json": {
                 "schema": {
-                  "required": [
-                    "status",
-                    "message",
-                    "data"
-                  ],
+                  "type": "object",
                   "properties": {
                     "status": {
                       "type": "integer",
@@ -765,18 +709,18 @@
                     },
                     "message": {
                       "type": "string",
-                      "example": "Reset password email has been successfully sent."
-                    },
-                    "data": {
-                      "type": "object"
+                      "example": "Reset email sent"
                     }
                   }
                 }
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
           "404": {
-            "$ref": "#/components/responses/404"
+            "$ref": "#/components/responses/404-2"
           }
         }
       }
@@ -787,10 +731,12 @@
           "Auth"
         ],
         "summary": "Reset user password",
-        "description": "Resets user password",
-        "operationId": "resetPwd",
+        "description": "Resets the user's password using a token",
+        "operationId": "resetPassword",
         "security": [],
         "requestBody": {
+          "description": "Password reset token and new password",
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -802,11 +748,13 @@
                 "properties": {
                   "token": {
                     "type": "string",
-                    "example": "ksIErcdA0oBwLX79f4bPcYXWKyEX/hcN6OcDU1Ll"
+                    "description": "Password reset token",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                   },
                   "password": {
                     "type": "string",
-                    "example": "12345678"
+                    "description": "New password",
+                    "example": "NewPassword123!"
                   }
                 }
               }
@@ -815,31 +763,27 @@
         },
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Password successfully reset",
             "content": {
               "application/json": {
                 "schema": {
-                  "required": [
-                    "status",
-                    "message",
-                    "data"
-                  ],
+                  "type": "object",
                   "properties": {
                     "status": {
-                      "type": "string",
+                      "type": "integer",
                       "example": 200
                     },
                     "message": {
                       "type": "string",
-                      "example": "Password has been successfully reset."
-                    },
-                    "data": {
-                      "type": "object"
+                      "example": "Password reset successfully"
                     }
                   }
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
           },
           "401": {
             "$ref": "#/components/responses/401"
@@ -852,8 +796,8 @@
         "tags": [
           "Auth"
         ],
-        "summary": "Log out user",
-        "description": "Logs out user",
+        "summary": "User logout",
+        "description": "Logs out the user by invalidating the session",
         "operationId": "logoutUser",
         "security": [
           {
@@ -862,7 +806,7 @@
         ],
         "responses": {
           "204": {
-            "description": "OK"
+            "description": "Successfully logged out"
           },
           "401": {
             "$ref": "#/components/responses/401"
@@ -1106,8 +1050,7 @@
               "type": "object",
               "required": [
                 "status",
-                "message",
-                "data"
+                "message"
               ],
               "properties": {
                 "status": {
@@ -1117,15 +1060,6 @@
                 "message": {
                   "type": "string",
                   "example": "Contact not found"
-                },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Contact not found"
-                    }
-                  }
                 }
               }
             }
@@ -1174,8 +1108,7 @@
               "type": "object",
               "required": [
                 "status",
-                "message",
-                "data"
+                "message"
               ],
               "properties": {
                 "status": {
@@ -1185,15 +1118,6 @@
                 "message": {
                   "type": "string",
                   "example": "User not found"
-                },
-                "data": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "User not found"
-                    }
-                  }
                 }
               }
             }

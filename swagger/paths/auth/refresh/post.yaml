@@ -1,37 +1,39 @@
-# swagger/paths/auths/refresh/post.yaml
+# swagger/paths/auth/send-reset-email/post.yaml
 tags:
   - Auth
-summary: Refresh user tokens
-description: Refreshes user tokens and returns new access token
-operationId: refreshUser
-security:
-  - cookieAuthUserId: []
-  - cookieAuthRefreshToken: []
+summary: Send password reset email
+description: Sends an email with a link to reset the password
+operationId: sendResetEmail
+security: []
+requestBody:
+  description: User's email
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - email
+        properties:
+          email:
+            type: string
+            description: User's email
+            example: john@example.com
 responses:
   '200':
-    description: OK
+    description: Reset email successfully sent
     content:
       application/json:
         schema:
           type: object
-          required:
-            - status
-            - message
-            - data
           properties:
             status:
               type: integer
               example: 200
             message:
               type: string
-              example: Successfully refreshed a session!
-            data:
-              type: object
-              required:
-                - accessToken
-              properties:
-                accessToken:
-                  type: string
-                  example: ksIErcdA0oBwLX79f4bPcYXWKyEX/hcN6OcDU1Ll
-  '401':
-    $ref: ../../../components/responses/401.yaml
+              example: Reset email sent
+  '404':
+    $ref: '../../../components/responses/auth/404.yaml'
+  '400':
+    $ref: '../../../components/responses/400.yaml'

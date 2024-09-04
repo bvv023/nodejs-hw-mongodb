@@ -1,13 +1,13 @@
-# swagger/paths/auths/logout/post.yaml
+# swagger/paths/auth/logout/post.yaml
 tags:
   - Auth
-summary: Log out user
-description: Logs out user
+summary: User logout
+description: Logs out the user by invalidating the session
 operationId: logoutUser
 security:
   - cookieAuthUserId: []
 responses:
   '204':
-    description: OK
+    description: Successfully logged out
   '401':
-    $ref: ../../../components/responses/401.yaml
+    $ref: '../../../components/responses/401.yaml'

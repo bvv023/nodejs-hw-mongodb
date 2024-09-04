@@ -28,8 +28,11 @@ router.post('/refresh', authenticate, refresh);
 router.post('/send-reset-email', validateBody(resetEmailSchema), sendResetEmail);
 router.post('/reset-pwd', validateBody(resetPasswordSchema), resetPassword);
 
-// Google OAuth
+// Маршрути для Google OAuth
 router.get('/google-oauth-url', getGoogleOAuthUrlController);
-router.post('/login-google', loginOrSignupWithGoogle);
+router.get('/confirm-google-auth', (req, res, next) => {
+  console.log('Google OAuth confirm route reached');
+  next();
+}, loginOrSignupWithGoogle);
 
 export default router;

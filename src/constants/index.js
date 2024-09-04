@@ -1,5 +1,5 @@
 // src/constants/index.js
-import env from '../utils/env.js';  // Правильний шлях до файлу
+import env from '../utils/env.js';
 import path from 'node:path';
 
 export const SMTP = {

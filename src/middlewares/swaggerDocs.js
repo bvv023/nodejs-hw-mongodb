@@ -1,8 +1,6 @@
 // src/middlewares/swaggerDocs.js
-import createHttpError from 'http-errors';
 import swaggerUI from 'swagger-ui-express';
-import fs from 'node:fs';
-
+import fs from 'fs';
 import { SWAGGER_PATH } from '../constants/index.js';
 
 export const swaggerDocs = () => {
@@ -12,6 +10,6 @@ export const swaggerDocs = () => {
   } catch (err) {
     console.error('Failed to load Swagger docs:', err);
     return (req, res, next) =>
-      next(createHttpError(500, "Can't load swagger docs"));
+      next(new Error("Can't load swagger docs"));
   }
 };
