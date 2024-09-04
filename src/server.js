@@ -38,10 +38,20 @@ const setupServer = async () => {
   app.use(cookieParser());
   app.use(express.json());
 
-  app.use(cors({
-    origin: 'http://localhost:3000', // Дозволяє запити з цього домену
-    credentials: true
-  }));
+  // Динамічна конфігурація CORS для підтримки як продакшн, так і локального середовища
+  const allowedOrigins = [env('APP_DOMAIN'), 'http://localhost:3000'];
+  const corsOptions = {
+    origin: (origin, callback) => {
+      if (allowedOrigins.includes(origin) || !origin) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true,
+  };
+
+  app.use(cors(corsOptions));
 
   app.use(pinoHttp({ logger }));
 
