@@ -49,6 +49,14 @@ const setupServer = async () => {
   app.use('/contacts', contactsRouter);
   app.use('/auth', authRouter);
 
+  // Маршрут для кореневої сторінки
+  app.get('/', (req, res) => {
+    res.send('Welcome to the API!');
+  });
+
+  // Маршрут для favicon
+  app.get('/favicon.ico', (req, res) => res.status(204));
+
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
   app.use('*', notFoundHandler);
