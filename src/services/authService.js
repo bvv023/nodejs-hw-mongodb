@@ -13,6 +13,7 @@ import {
   validateCode,
 } from '../utils/googleOAuth2.js';
 
+// Реєстрація користувача
 const registerUser = async ({ name, email, password }) => {
   const existingUser = await User.findOne({ email });
   if (existingUser) {
@@ -25,6 +26,7 @@ const registerUser = async ({ name, email, password }) => {
   return newUser.toJSON();
 };
 
+// Логін користувача
 const loginUser = async ({ email, password }) => {
   const user = await User.findOne({ email });
   if (!user) {
@@ -58,6 +60,7 @@ const loginUser = async ({ email, password }) => {
   return { accessToken, refreshToken, sessionId: session._id };
 };
 
+// Оновлення сесії
 const refreshSession = async (refreshToken) => {
   const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
   const session = await Session.findOne({ refreshToken });
@@ -86,6 +89,7 @@ const refreshSession = async (refreshToken) => {
   return { accessToken: newAccessToken, newRefreshToken, sessionId: session._id };
 };
 
+// Вихід користувача
 const logoutUser = async (refreshToken) => {
   const session = await Session.findOneAndDelete({ refreshToken });
 
@@ -94,6 +98,7 @@ const logoutUser = async (refreshToken) => {
   }
 };
 
+// Надсилання email для скидання пароля
 const sendResetEmailService = async (email) => {
   const user = await User.findOne({ email });
   if (!user) {
@@ -134,6 +139,7 @@ const sendResetEmailService = async (email) => {
   }
 };
 
+// Скидання пароля
 const resetPasswordService = async (token, newPassword) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -159,6 +165,7 @@ const resetPasswordService = async (token, newPassword) => {
   }
 };
 
+// Логін або реєстрація через Google OAuth
 export const loginOrSignupWithGoogle = async (code) => {
   const loginTicket = await validateCode(code);
   const payload = loginTicket.getPayload();
@@ -204,4 +211,3 @@ export {
   sendResetEmailService,
   resetPasswordService,
 };
-

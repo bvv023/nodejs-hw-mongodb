@@ -7,7 +7,6 @@ content:
       required:
         - status
         - message
-        - data
       properties:
         status:
           type: integer
@@ -15,9 +14,3 @@ content:
         message:
           type: string
           example: Contact not found
-        data:
-          type: object
-          properties:
-            message:
-              type: string
-              example: Contact not found

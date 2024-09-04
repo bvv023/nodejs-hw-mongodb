@@ -11,6 +11,7 @@ import {
 } from '../services/authService.js';
 import { generateAuthUrl } from '../utils/googleOAuth2.js';
 
+// Реєстрація нового користувача
 export const register = async (req, res, next) => {
   try {
     const user = await registerUser(req.body);
@@ -29,6 +30,7 @@ export const register = async (req, res, next) => {
   }
 };
 
+// Логін користувача
 export const login = async (req, res, next) => {
   try {
     const { accessToken, refreshToken, sessionId } = await loginUser(req.body);
@@ -45,6 +47,7 @@ export const login = async (req, res, next) => {
   }
 };
 
+// Оновлення токена
 export const refresh = async (req, res, next) => {
   try {
     if (!req.cookies) {
@@ -71,6 +74,7 @@ export const refresh = async (req, res, next) => {
   }
 };
 
+// Вихід користувача
 export const logout = async (req, res, next) => {
   try {
     await logoutUser(req.cookies.refreshToken);
@@ -81,6 +85,7 @@ export const logout = async (req, res, next) => {
   }
 };
 
+// Надсилання email для скидання пароля
 export const sendResetEmail = async (req, res, next) => {
   try {
     await sendResetEmailService(req.body.email);
@@ -94,6 +99,7 @@ export const sendResetEmail = async (req, res, next) => {
   }
 };
 
+// Скидання пароля
 export const resetPassword = async (req, res, next) => {
   try {
     await resetPasswordService(req.body.token, req.body.password);
@@ -107,6 +113,7 @@ export const resetPassword = async (req, res, next) => {
   }
 };
 
+// Отримання URL для Google OAuth
 export const getGoogleOAuthUrlController = async (req, res) => {
   const url = generateAuthUrl();
   res.json({
@@ -118,9 +125,14 @@ export const getGoogleOAuthUrlController = async (req, res) => {
   });
 };
 
+// Логін через Google OAuth або реєстрація
 export const loginOrSignupWithGoogle = async (req, res, next) => {
   try {
-    const { code } = req.body;
+    console.log('Received Google OAuth request:', req.query);
+    const { code } = req.query;
+    if (!code) {
+      throw createError(400, 'Google authorization code is missing');
+    }
     const result = await loginOrSignupWithGoogleService(code);
     res.status(200).json({
       status: 200,
@@ -128,7 +140,7 @@ export const loginOrSignupWithGoogle = async (req, res, next) => {
       data: result,
     });
   } catch (error) {
-    next(error);
+    console.error('Google OAuth login error:', error);
+    next(createError(500, 'Google authentication failed'));
   }
 };
-

@@ -1,16 +1,16 @@
 # swagger/paths/contacts/post.yaml
 tags:
   - Contacts
-summary: Add contact
-description: Adds contacts and returns it
-operationId: createContact
+summary: Add a new contact
+description: Adds a new contact and returns it
+operationId: addContact
 security:
   - bearerAuth: []
 requestBody:
-  description: Contact to add
+  description: Contact data to add
   required: true
   content:
-    multipart/form-data:
+    application/json:
       schema:
         type: object
         required:
@@ -20,56 +20,34 @@ requestBody:
           - contactType
         properties:
           name:
+            type: string
             description: Contact's name
-            type: string
             example: Allan Walker
-            minLength: 3
-            maxLength: 20
           phoneNumber:
-            description: Contact's phone number
             type: string
-            example: 123-123-123
-            minLength: 3
-            maxLength: 20
+            description: Contact's phone number
+            example: 123-456-7890
           email:
             type: string
-            example: test@gmail.com
-            minLength: 3
-            maxLength: 20
+            description: Contact's email
+            example: allan@example.com
           isFavourite:
             type: boolean
+            description: Whether the contact is marked as favourite
             example: true
           contactType:
             type: string
             enum: ['work', 'home', 'personal']
+            description: Type of contact
             example: 'home'
-            minLength: 3
-            maxLength: 20
-          photo:
-            type: string
 responses:
   '200':
-    description: OK
+    description: Contact successfully created
     content:
       application/json:
         schema:
-          type: object
-          required:
-            - status
-            - message
-            - data
-          properties:
-            status:
-              type: integer
-              example: 200
-            message:
-              type: string
-              example: Successfully created a contact!
-            data:
-              $ref: '../../components/schemas/contact.yaml'
+          $ref: '../../components/schemas/contact.yaml'
   '400':
     $ref: '../../components/responses/400.yaml'
   '401':
     $ref: '../../components/responses/401.yaml'
-  '403':
-    $ref: '../../components/responses/403.yaml'

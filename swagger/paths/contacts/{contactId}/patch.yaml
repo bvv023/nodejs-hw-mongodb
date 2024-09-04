@@ -16,8 +16,9 @@ parameters:
       example: 65ca67e7ae7f10c88b598384
 requestBody:
   description: Fields to update
+  required: true
   content:
-    multipart-form-data:
+    application/json:
       schema:
         type: object
         properties:
@@ -66,14 +67,14 @@ responses:
               example: 200
             message:
               type: string
-              example: Successfully patched contact!
+              example: Successfully updated contact!
             data:
-              $ref: ../../../components/schemas/contact.yaml
+              $ref: '../../../components/schemas/contact.yaml'
   '400':
-    $ref: ../../../components/responses/400.yaml
+    $ref: '../../../components/responses/400.yaml'
   '401':
-    $ref: ../../../components/responses/401.yaml
+    $ref: '../../../components/responses/401.yaml'
   '403':
-    $ref: ../../../components/responses/403.yaml
+    $ref: '../../../components/responses/403.yaml'
   '404':
     $ref: '../../../components/responses/contacts/404.yaml'
