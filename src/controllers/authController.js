@@ -11,6 +11,13 @@ import {
 } from '../services/authService.js';
 import { generateAuthUrl } from '../utils/googleOAuth2.js';
 
+// Функція для отримання хоста
+const getHost = (req) => {
+  const protocol = req.protocol;
+  const host = req.get('host');
+  return `${protocol}://${host}`;
+};
+
 // Реєстрація нового користувача
 export const register = async (req, res, next) => {
   try {
@@ -115,14 +122,24 @@ export const resetPassword = async (req, res, next) => {
 
 // Отримання URL для Google OAuth
 export const getGoogleOAuthUrlController = async (req, res) => {
-  const url = generateAuthUrl();
-  res.json({
-    status: 200,
-    message: 'Successfully get Google OAuth url!',
-    data: {
-      url,
-    },
-  });
+  try {
+    const host = getHost(req); // Отримуємо поточний хост із запиту
+    const redirectUri = `${host}/auth/confirm-google-auth`;
+
+    const authUrl = generateAuthUrl(redirectUri); // Передаємо динамічний redirectUri
+
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully generated Google OAuth URL!',
+      data: { url: authUrl },
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 500,
+      message: 'Something went wrong',
+      data: error.message,
+    });
+  }
 };
 
 // Логін через Google OAuth або реєстрація
