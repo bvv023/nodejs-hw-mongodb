@@ -14,7 +14,7 @@ tags:
     description: Auth operations.
 servers:
   - url: http://localhost:3000
-  - url: https://hw7-swagger-5mc7.onrender.com
+  - url: https://hw7-swagger-yn5d.onrender.com
 
 paths:
   /contacts:
