@@ -1,0 +1,13 @@
+#swagger/components/responses/409.yaml
+description: 'Conflict, email already in use'
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 409
+        message:
+          type: string
+          example: 'Email already in use'

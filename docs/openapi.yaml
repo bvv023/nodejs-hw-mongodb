@@ -1,77 +1,61 @@
 # docs/openapi.yaml
 openapi: 3.1.0
 info:
-  version: 1.0.0
   title: Contacts App
+  version: 1.0.0
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  description: Contacts App
+  description: This is a documentation of contacts app
 tags:
   - name: Contacts
-    description: Contacts operations
+    description: Operations about contacts.
   - name: Auth
-    description: Auth operations
+    description: Auth operations.
 servers:
   - url: http://localhost:3000
   - url: https://hw7-swagger-5mc7.onrender.com
+
 paths:
   /contacts:
     get:
-      $ref: '../swagger/paths/contacts/get.yaml'
+      $ref: ../swagger/paths/contacts/get.yaml
     post:
-      $ref: '../swagger/paths/contacts/post.yaml'
+      $ref: ../swagger/paths/contacts/post.yaml
   /contacts/{contactId}:
     get:
-      $ref: '../swagger/paths/contacts/{contactId}/get.yaml'
+      $ref: ../swagger/paths/contacts/{contactId}/get.yaml
     patch:
-      $ref: '../swagger/paths/contacts/{contactId}/patch.yaml'
+      $ref: ../swagger/paths/contacts/{contactId}/patch.yaml
     delete:
-      $ref: '../swagger/paths/contacts/{contactId}/delete.yaml'
+      $ref: ../swagger/paths/contacts/{contactId}/delete.yaml
   /auth/register:
     post:
-      $ref: '../swagger/paths/auth/register/post.yaml'
+      $ref: ../swagger/paths/auth/register.yaml
   /auth/login:
     post:
-      $ref: '../swagger/paths/auth/login/post.yaml'
-  /auth/refresh:
-    post:
-      $ref: '../swagger/paths/auth/refresh/post.yaml'
-  /auth/send-reset-email:
-    post:
-      $ref: '../swagger/paths/auth/send-reset-email/post.yaml'
-  /auth/reset-pwd:
-    post:
-      $ref: '../swagger/paths/auth/reset-pwd/post.yaml'
+      $ref: ../swagger/paths/auth/login.yaml
   /auth/logout:
     post:
-      $ref: '../swagger/paths/auth/logout/post.yaml'
+      $ref: ../swagger/paths/auth/logout.yaml
+  /auth/refresh:
+    post:
+      $ref: ../swagger/paths/auth/refresh.yaml
+  /auth/send-reset-email:
+    post:
+      $ref: ../swagger/paths/auth/send-reset-email.yaml
+  /auth/reset-pwd:
+    post:
+      $ref: ../swagger/paths/auth/reset-pwd.yaml
+
 components:
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
-    cookieAuthRefreshToken:
-      type: apiKey
-      in: cookie
-      name: refreshToken
-    cookieAuthUserId:
-      type: apiKey
-      in: cookie
-      name: userId
+      bearerFormat: JWT
+
   schemas:
-    contact:
-      $ref: '../swagger/components/schemas/contact.yaml'
     user:
-      $ref: '../swagger/components/schemas/user.yaml'
-  responses:
-    400:
-      $ref: '../swagger/components/responses/400.yaml'
-    401:
-      $ref: '../swagger/components/responses/401.yaml'
-    403:
-      $ref: '../swagger/components/responses/403.yaml'
-    404:
-      $ref: '../swagger/components/responses/contacts/404.yaml'
-    409:
-      $ref: '../swagger/components/responses/auth/409.yaml'
+      type: object
+      $ref: ../swagger/components/schemas/user.yaml

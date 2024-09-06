@@ -1,32 +1,14 @@
 // src/utils/saveFileToUploadDir.js
-import cloudinary from 'cloudinary';
-import { CLOUDINARY } from '../constants/index.js';
-import path from 'path';
-import fs from 'fs/promises';
-
-cloudinary.v2.config({
-  cloud_name: CLOUDINARY.CLOUD_NAME,
-  api_key: CLOUDINARY.API_KEY,
-  api_secret: CLOUDINARY.API_SECRET,
-});
-
-export const saveFileToCloudinary = async (file) => {
-  const result = await cloudinary.v2.uploader.upload(file.path);
-  return result.secure_url;
-};
+import path from 'node:path';
+import fs from 'node:fs/promises';
+import { TEMP_UPLOAD_DIR, UPLOAD_DIR } from '../constants/index.js';
+import { env } from './env.js';
 
 export const saveFileToUploadDir = async (file) => {
-  const uploadDir = path.join(process.cwd(), 'uploads');
-  
-  try {
-    await fs.access(uploadDir);
-  } catch {
-    await fs.mkdir(uploadDir, { recursive: true });
-  }
+  await fs.rename(
+    path.join(TEMP_UPLOAD_DIR, file.filename),
+    path.join(UPLOAD_DIR, file.filename),
+  );
 
-  const filePath = path.join(uploadDir, `${Date.now()}_${file.originalname}`);
-  
-  await fs.rename(file.path, filePath);
-  
-  return filePath;
+  return `${env('APP_DOMAIN')}/uploads/${file.filename}`;
 };

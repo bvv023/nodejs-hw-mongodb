@@ -1,47 +1,45 @@
-# swagger/components/shenas/contact.yaml
+#swagger/components/schemas/contact.yaml
 type: object
 required:
   - _id
+  - name
   - phoneNumber
-  - email
-  - isFavourite
   - contactType
   - userId
-  - updatedAt
-  - createdAt
 properties:
   _id:
+    description: 'Backend-generated unique identifier.'
     type: string
-    description: Contact id
-    example: 65ca67e7ae7f10c88b598384
+    format: objectId
+    example: '66c705b05a68dd9ca451a403'
+  name:
+    description: 'The name of the contact'
+    type: string
+    example: 'Fedir Dvopypka'
   phoneNumber:
+    description: 'The phone number of the contact'
     type: string
-    description: Contact phone number
-    example: 123-123-123
+    example: '+380487222227'
   email:
+    description: 'The email of the contact'
     type: string
-    description: Contact email
-    example: test@gmail.com
-  isFavourite:
+    example: 'twopyka@gmail.com'
+  isFavorite:
+    description: 'Indicates whether the contact is marked as a favorite'
     type: boolean
-    description: Whether the contact if favourite
+    example: false
   contactType:
+    description: 'Specifies the type of contact'
     type: string
-    description: Type of contact
-    enum: [work, home, personal]
-    example: home
+    enum: ['work', 'home', 'personal']
+    example: 'work'
+    default: 'personal'
   userId:
+    description: 'Unique identifier for the user who owns the contact'
     type: string
-    description: Owner's id
-    example: 65e4decdd286b30065d54af9
+    format: objectId
+    example: '66c5f3ff36b6e6d8e160fb04'
   photo:
+    description: 'URL to the contacts photo'
     type: string
-    description: Contact's photo
-  updatedAt:
-    type: string
-    format: date-time
-    description: Contact last update
-  createdAt:
-    type: string
-    format: date-time
-    description: Contact created at
+    example: 'https://res.cloudinary.com/dja5yq7gk/image/upload/v1725092637/hvga6m5ixnpewqkjri2h.jpg'

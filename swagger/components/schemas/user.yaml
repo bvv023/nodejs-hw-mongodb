@@ -1,33 +1,24 @@
-# swagger/components/shenas/user.yaml
+#swagger/components/schemas/user.yaml
 type: object
 required:
-  - _id
   - name
   - email
-  - updatedAt
-  - createdAt
+  - password
 properties:
   _id:
-    description: User id
+    description: 'Backend-generated unique identifier.'
     type: string
-    example: 65ca67e7ae7f10c88b598384
+    format: objectId
+    example: '66c5f3ff36b6e6d8e160fb04'
   name:
-    description: User's name
+    description: 'Username'
     type: string
-    example: Gareth Walker
+    example: 'Fedir Dvopypka'
   email:
-    description: User's email
+    description: 'E-mail address'
     type: string
-    example: test@gmail.com
+    example: 'twopyka@gmail.com'
   password:
-    description: User's password
+    description: 'Password'
     type: string
-    example: '12345678'
-  updatedAt:
-    description: User last update
-    type: string
-    format: date-time
-  createdAt:
-    description: User created at
-    type: string
-    format: date-time
+    example: 'examplepwd12345'

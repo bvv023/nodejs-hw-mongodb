@@ -1,41 +1,38 @@
 // src/utils/googleOAuth2.js
-import { OAuth2Client } from 'google-auth-library';
-import env from './env.js';
 import createHttpError from 'http-errors';
 
-// Ініціалізація клієнта OAuth2 без використання файлу oauthConfig
+import { OAuth2Client } from 'google-auth-library';
+import path from 'node:path';
+import { readFile } from 'fs/promises';
+
+import { env } from './env.js';
+
+const PATH_JSON = path.join(process.cwd(), 'google-oauth.json');
+
+const oauthConfig = JSON.parse(await readFile(PATH_JSON));
+
 const googleOAuthClient = new OAuth2Client({
   clientId: env('GOOGLE_AUTH_CLIENT_ID'),
   clientSecret: env('GOOGLE_AUTH_CLIENT_SECRET'),
+  redirectUri: oauthConfig.web.redirect_uris[0],
 });
 
-// Оновлено для динамічного визначення redirectUri
-export const generateAuthUrl = (redirectUri) => {
-  const authUrl = googleOAuthClient.generateAuthUrl({
-    redirect_uri: redirectUri, // Використовуємо передану URL-адресу
+export const generateAuthUrl = () =>
+  googleOAuthClient.generateAuthUrl({
     scope: [
       'https://www.googleapis.com/auth/userinfo.email',
       'https://www.googleapis.com/auth/userinfo.profile',
     ],
   });
-  console.log('Generated Google Auth URL:', authUrl);
-  return authUrl;
-};
 
 export const validateCode = async (code) => {
-  try {
-    const response = await googleOAuthClient.getToken(code);
-    if (!response.tokens.id_token) throw createHttpError(401, 'Unauthorized');
+  const response = await googleOAuthClient.getToken(code);
+  if (!response.tokens.id_token) throw createHttpError(401, 'Unauthorized');
 
-    const ticket = await googleOAuthClient.verifyIdToken({
-      idToken: response.tokens.id_token,
-    });
-    console.log('Google OAuth token validated successfully');
-    return ticket.getPayload();
-  } catch (error) {
-    console.error('Error during token validation:', error);
-    throw error;
-  }
+  const ticket = await googleOAuthClient.verifyIdToken({
+    idToken: response.tokens.id_token,
+  });
+  return ticket;
 };
 
 export const getFullNameFromGoogleTokenPayload = (payload) => {
@@ -46,6 +43,5 @@ export const getFullNameFromGoogleTokenPayload = (payload) => {
     fullName = payload.given_name;
   }
 
-  console.log('Extracted full name from Google token payload:', fullName);
   return fullName;
 };

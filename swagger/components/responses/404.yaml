@@ -1,5 +1,5 @@
-# swagger/components/responses/403.yaml
-description: Forbidden
+#swagger/components/responses/404.yaml
+description: Contact not found
 content:
   application/json:
     schema:
@@ -11,13 +11,10 @@ content:
       properties:
         status:
           type: integer
-          example: 403
+          example: 404
         message:
           type: string
-          example: Forbidden
+          example: Not found
         data:
           type: object
-          properties:
-            message:
-              type: string
-              example: Forbidden
+          example: {}
