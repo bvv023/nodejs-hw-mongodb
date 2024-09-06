@@ -55,10 +55,10 @@ router.post(
   ctrlWrapper(resetPasswordController),
 );
 
-router.get('/get-oauth-url', ctrlWrapper(getGoogleOAuthUrlController));
+router.get('/google-oauth-url', ctrlWrapper(getGoogleOAuthUrlController));
 
 router.post(
-  '/confirm-oauth',
+  '/confirm-google-auth',
   parseJSON,
   validateBody(loginWithGoogleOAuthSchema),
   ctrlWrapper(loginWithGoogleController),
