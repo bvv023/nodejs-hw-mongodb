@@ -3,7 +3,7 @@ import express from 'express';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import {
   loginUserSchema,
-  loginWithGoogleOAuthSchema, // Схема валідації Google OAuth
+  loginWithGoogleOAuthSchema,
   registerUserSchema,
   requestResetEmailSchema,
   resetPasswordSchema,
@@ -55,14 +55,12 @@ router.post(
   ctrlWrapper(resetPasswordController),
 );
 
-// Маршрут для отримання URL Google OAuth
-router.get('/google-oauth-url', ctrlWrapper(getGoogleOAuthUrlController));
+router.get('/get-oauth-url', ctrlWrapper(getGoogleOAuthUrlController));
 
-// Маршрут для обробки Google OAuth
 router.post(
-  '/confirm-google-auth',
+  '/confirm-oauth',
   parseJSON,
-  validateBody(loginWithGoogleOAuthSchema), // Використовується схема валідації
+  validateBody(loginWithGoogleOAuthSchema),
   ctrlWrapper(loginWithGoogleController),
 );
 
