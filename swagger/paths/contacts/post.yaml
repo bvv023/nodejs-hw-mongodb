@@ -1,53 +1,73 @@
 # swagger/paths/contacts/post.yaml
 tags:
   - Contacts
-summary: Add a new contact
-description: Adds a new contact and returns it
-operationId: addContact
+summary: Create a new contact
+operationId: createContact
+description: 'Create a contact with payload'
 security:
   - bearerAuth: []
 requestBody:
-  description: Contact data to add
-  required: true
   content:
-    application/json:
+    multipart/form-data:
       schema:
         type: object
         required:
           - name
           - phoneNumber
-          - email
           - contactType
         properties:
           name:
+            description: 'The name of the contact'
             type: string
-            description: Contact's name
-            example: Allan Walker
+            example: 'John Doe'
           phoneNumber:
+            description: 'The phone number of the contact'
             type: string
-            description: Contact's phone number
-            example: 123-456-7890
-          email:
-            type: string
-            description: Contact's email
-            example: allan@example.com
-          isFavourite:
-            type: boolean
-            description: Whether the contact is marked as favourite
-            example: true
+            example: '+1234567890'
           contactType:
+            description: 'Specifies the type of contact'
             type: string
             enum: ['work', 'home', 'personal']
-            description: Type of contact
-            example: 'home'
+            example: 'work'
+            default: 'personal'
+          isFavorite:
+            description: 'Indicates whether the contact is marked as a favorite'
+            type: boolean
+            example: false
+            default: false
+          email:
+            description: 'The email of the contact'
+            type: string
+            example: 'johndoe@gmail.com'
+          photo:
+            description: 'The photo of the contact'
+            type: string
+            format: binary
+  description: Details to create a contact
 responses:
-  '200':
-    description: Contact successfully created
+  '201':
+    description: 'Create a contact'
     content:
       application/json:
         schema:
-          $ref: '../../components/schemas/contact.yaml'
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 201
+            message:
+              type: string
+              example: 'Successfully created a contact!'
+            data:
+              type: object
+              $ref: ../../components/schemas/contact.yaml
   '400':
-    $ref: '../../components/responses/400.yaml'
+    $ref: ../../components/responses/400.yaml
   '401':
-    $ref: '../../components/responses/401.yaml'
+    $ref: ../../components/responses/401.yaml
+  '500':
+    $ref: ../../components/responses/500.yaml

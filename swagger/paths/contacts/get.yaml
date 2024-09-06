@@ -1,52 +1,46 @@
 # swagger/paths/contacts/get.yaml
 tags:
   - Contacts
-summary: Get all contacts
-description: Returns list of contacts
+summary: Get all user contacts
 operationId: getAllContacts
+description: 'Retrieve a list of contacts with optional filtering and sorting'
 security:
   - bearerAuth: []
 parameters:
-  - name: _id
-    in: query
+  - in: query
+    name: page
+    schema:
+      type: integer
+      example: 1
+    description: 'Page number for pagination'
+  - in: query
+    name: perPage
+    schema:
+      type: integer
+      example: 10
+    description: 'Number of contacts per page'
+  - in: query
+    name: sortBy
     schema:
       type: string
-      example: 65ca67e7ae7f10c88b598384
-  - name: name
-    in: query
-    schema:
-      type: string
-      example: Allan Walker
-  - name: phoneNumber
-    in: query
-    schema:
-      type: string
-      example: 123-123-123
-  - name: email
-    in: query
-    schema:
-      type: string
-      example: test@gmail.com
-  - name: isFavourite
-    in: query
-    schema:
-      type: boolean
-      example: true
-  - name: contactType
-    in: query
-    schema:
-      type: string
-      example: home
-  - name: sortOrder
-    in: query
+      example: '_id'
+    description: 'All fields of contact can be mentioned. Default value is - _id'
+  - in: query
+    name: sortOrder
     schema:
       type: string
       enum: ['asc', 'desc']
       example: 'asc'
-    description: Sorting order for contacts, default is by _id
+    description: Order to sort the results. Can be "asc" or "desc".
+  - in: query
+    name: isFavorite
+    schema:
+      type: boolean
+      example: true
+    description: 'This field allows to select favorite contacts'
 responses:
   '200':
-    description: OK
+    description: Successfully found contacts
     content:
       application/json:
         schema:
@@ -55,36 +49,49 @@ responses:
             - status
             - message
             - data
-            - page
-            - perPage
-            - totalItems
-            - totalPages
-            - hasNextPage
-            - hasPreviousPage
           properties:
             status:
               type: integer
               example: 200
             message:
               type: string
-              example: Successfully found contacts
+              example: Successfully found contacts!
             data:
-              type: array
-              items:
-                $ref: '../../components/schemas/contact.yaml'
-            perPage:
-              type: integer
-              example: 2
-            totalItems:
-              type: integer
-              example: 10
-            hasNextPage:
-              type: boolean
-              example: false
-            hasPreviousPage:
-              type: boolean
-              example: true
+              type: object
+              required:
+                - data
+                - page
+                - perPage
+                - totalItems
+                - totalPages
+                - hasNextPage
+                - hasPreviousPage
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: ../../components/schemas/contact.yaml
+                page:
+                  type: number
+                  example: 1
+                perPage:
+                  type: number
+                  example: 10
+                totalItems:
+                  type: number
+                  example: 30
+                totalPages:
+                  type: number
+                  example: 3
+                hasNextPage:
+                  type: boolean
+                  example: true
+                hasPreviousPage:
+                  type: boolean
+                  example: false
+  '500':
+    $ref: ../../components/responses/500.yaml
+  '404':
+    $ref: ../../components/responses/404.yaml
   '401':
-    $ref: '../../components/responses/401.yaml'
-  '403':
-    $ref: '../../components/responses/403.yaml'
+    $ref: ../../components/responses/401.yaml

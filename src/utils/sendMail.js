@@ -1,58 +1,17 @@
 // src/utils/sendMail.js
 import nodemailer from 'nodemailer';
-import net from 'net';
 
-const port = process.env.SMTP_PORT ? Number(process.env.SMTP_PORT) : null;
-
-let transporter;
-
-if (!process.env.SMTP_HOST || !port || !process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
-  console.error('SMTP configuration is missing some required variables.');
-} else {
-  transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port,
-    secure: false,
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASSWORD,
-    },
-    tls: {
-      rejectUnauthorized: false,
-    },
-    family: 4,
-    localAddress: '0.0.0.0',
-  });
-
-  transporter.verify(function (error, success) {
-    if (error) {
-      console.error('SMTP connection error:', error);
-    } else {
-      console.log('SMTP server is ready to take messages');
-    }
-  });
-
-  const client = net.createConnection({ host: process.env.SMTP_HOST, port }, () => {
-    console.log('Connected to SMTP server!');
-    client.end();
-  });
-
-  client.on('error', (err) => {
-    console.error('Connection error:', err);
-  });
-}
+import { SMTP } from '../constants/index.js';
 
 export const sendEmail = async (options) => {
-  if (!transporter) {
-    console.error('Transporter is not initialized.');
-    return;
-  }
+  const transporter = nodemailer.createTransport({
+    host: SMTP.SMTP_HOST,
+    port: Number(SMTP.SMTP_PORT),
+    auth: {
+      user: SMTP.SMTP_USER,
+      pass: SMTP.SMTP_PASSWORD,
+    },
+  });
 
-  try {
-    console.log('Attempting to send email with options:', options);
-    const info = await transporter.sendMail(options);
-    console.log('Email sent successfully:', info);
-  } catch (error) {
-    console.error('Failed to send email:', error);
-  }
+  return await transporter.sendMail(options);
 };

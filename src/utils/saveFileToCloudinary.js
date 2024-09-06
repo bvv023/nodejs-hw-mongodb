@@ -1,19 +1,17 @@
 // src/utils/saveFileToCloudinary.js
 import cloudinary from 'cloudinary';
-import { CLOUDINARY } from '../constants/index.js';
+import fs from 'node:fs/promises';
+import { env } from './env.js';
 
 cloudinary.v2.config({
-  cloud_name: CLOUDINARY.CLOUD_NAME,
-  api_key: CLOUDINARY.API_KEY,
-  api_secret: CLOUDINARY.API_SECRET,
+  secure: true,
+  cloud_name: env('CLOUD_NAME'),
+  api_key: env('API_KEY'),
+  api_secret: env('API_SECRET'),
 });
 
 export const saveFileToCloudinary = async (file) => {
-  try {
-    const result = await cloudinary.v2.uploader.upload(file.path);
-    return result.secure_url;
-  } catch (error) {
-    console.error('Cloudinary upload error:', error);
-    throw new Error('Failed to upload image to Cloudinary');
-  }
+  const response = await cloudinary.v2.uploader.upload(file.path);
+  await fs.unlink(file.path);
+  return response.secure_url;
 };
