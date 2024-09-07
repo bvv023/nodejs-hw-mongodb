@@ -111,7 +111,7 @@ export const getGoogleOAuthUrlController = async (req, res) => {
 };
 
 export const loginWithGoogleController = async (req, res) => {
-  const { code } = req.query; // Отримуємо код із query параметрів
+  const { code } = req.query;
   const session = await loginOrSignupWithGoogle(code);
   setupSession(res, session);
 

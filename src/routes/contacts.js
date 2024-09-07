@@ -1,4 +1,4 @@
-// src/routers/contacts.js
+// src/routes/contacts.js
 import express from 'express';
 import {
   createContactController,
@@ -31,7 +31,7 @@ router.get('/:contactId', isValidId, ctrlWrapper(getContactByIdController));
 
 router.post(
   '',
-  upload.single('photo'), // Використовуємо 'photo' для завантаження файлів
+  upload.single('photo'),
   validateBody(createContactSchema),
   ctrlWrapper(createContactController),
 );
