@@ -60,13 +60,10 @@ export const createContactController = async (req, res, next) => {
 
     let photoUrl;
 
-    // Перевіряємо, чи є файл
     if (req.file) {
       if (env('ENABLE_CLOUDINARY') === 'true') {
-        // Якщо використовується Cloudinary
         photoUrl = await saveFileToCloudinary(req.file);
       } else {
-        // Якщо файли зберігаються локально
         photoUrl = await saveFileToUploadDir(req.file);
       }
       contactData.photo = photoUrl;
