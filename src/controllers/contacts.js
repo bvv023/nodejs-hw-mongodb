@@ -51,18 +51,41 @@ export const getContactByIdController = async (req, res) => {
   });
 };
 
-export const createContactController = async (req, res) => {
-  const contactData = {
-    ...req.body,
-    userId: req.user._id,
-  };
-  const contact = await createContact(contactData);
+export const createContactController = async (req, res, next) => {
+  try {
+    const contactData = {
+      ...req.body,
+      userId: req.user._id,
+    };
 
-  res.status(201).json({
-    status: 201,
-    message: `Successfully created a contact!`,
-    data: contact,
-  });
+    let photoUrl;
+
+    // Перевіряємо, чи є файл
+    if (req.file) {
+      if (env('ENABLE_CLOUDINARY') === 'true') {
+        // Якщо використовується Cloudinary
+        photoUrl = await saveFileToCloudinary(req.file);
+      } else {
+        // Якщо файли зберігаються локально
+        photoUrl = await saveFileToUploadDir(req.file);
+      }
+      contactData.photo = photoUrl;
+    }
+
+    console.log('Creating contact with data:', contactData);
+
+    const contact = await createContact(contactData);
+
+    res.status(201).json({
+      status: 201,
+      message: `Successfully created a contact!`,
+      data: contact,
+    });
+  } catch (error) {
+    console.error('Error creating contact:', error.message);
+    console.error('Stack trace:', error.stack);
+    next(error);
+  }
 };
 
 export const deleteContactController = async (req, res) => {

@@ -31,8 +31,7 @@ router.get('/:contactId', isValidId, ctrlWrapper(getContactByIdController));
 
 router.post(
   '',
-  parseJSON,
-  upload.single('photo'),
+  upload.single('photo'), // Використовуємо 'photo' для завантаження файлів
   validateBody(createContactSchema),
   ctrlWrapper(createContactController),
 );
