@@ -1,6 +1,6 @@
 // src/controllers/contacts.js
+// src/controllers/contacts.js
 import createHttpError from 'http-errors';
-
 import {
   createContact,
   deleteContact,
@@ -110,14 +110,20 @@ export const patchContactController = async (req, res) => {
     }
   }
 
-  const result = await updateContact(
-    contactId,
-    {
-      ...req.body,
-      photo: photoUrl,
-    },
-    req.user._id,
-  );
+  // Фільтрування полів для оновлення: ігнорування порожніх значень
+  const updateData = {};
+  Object.keys(req.body).forEach((key) => {
+    if (req.body[key] !== '' && req.body[key] !== null) {
+      updateData[key] = req.body[key];
+    }
+  });
+
+  // Додавання фото до даних для оновлення, якщо воно є
+  if (photoUrl) {
+    updateData.photo = photoUrl;
+  }
+
+  const result = await updateContact(contactId, updateData, req.user._id);
 
   if (!result) {
     throw createHttpError(404, 'Contact not found');
