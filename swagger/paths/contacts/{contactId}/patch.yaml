@@ -40,8 +40,8 @@ requestBody:
           contactType:
             description: 'Specifies the type of contact'
             type: string
-            enum: ['home', 'personal']
-            example: 'home'
+            enum: ['work', 'home', 'personal']
+            example: 'work'
           photo:
             description: 'The photo of the contact'
             type: string
