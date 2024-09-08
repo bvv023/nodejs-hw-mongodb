@@ -361,7 +361,7 @@
             "schema": {
               "type": "string",
               "format": "objectId",
-              "example": "66a35382997eac73e992ae30"
+              "example": "66c705b05a68dd9ca451a403"
             },
             "description": "The ID of the contact to update"
           }
@@ -375,23 +375,22 @@
                   "name": {
                     "description": "The name of the contact",
                     "type": "string",
-                    "example": "John Doe"
+                    "example": "Fedir Dvopypka"
                   },
                   "phoneNumber": {
                     "description": "The phone number of the contact",
                     "type": "string",
-                    "example": "+1234567890"
+                    "example": "+380487222227"
                   },
                   "isFavourite": {
-                    "description": "Indicates whether the contact is marked as a favorite",
+                    "description": "Indicates whether the contact is marked as a favourite",
                     "type": "boolean",
                     "example": true
                   },
                   "email": {
                     "description": "The email of the contact",
                     "type": "string",
-                    "example": "johndoe@gmail.com",
-                    "default": false
+                    "example": "twopyka@gmail.com"
                   },
                   "contactType": {
                     "description": "Specifies the type of contact",
@@ -401,16 +400,14 @@
                       "home",
                       "personal"
                     ],
-                    "example": "work",
-                    "default": "personal"
+                    "example": "work"
                   },
                   "photo": {
                     "description": "The photo of the contact",
                     "type": "string",
                     "format": "binary"
                   }
-                },
-                "additionalProperties": false
+                }
               }
             }
           },
@@ -435,7 +432,7 @@
                     },
                     "message": {
                       "type": "string",
-                      "example": "Successfully patched contact with id 66a35382997eac73e992ae30!"
+                      "example": "Successfully patched contact with id 66c705b05a68dd9ca451a403!"
                     },
                     "data": {
                       "type": "object",
