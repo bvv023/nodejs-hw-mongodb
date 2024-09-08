@@ -589,7 +589,7 @@
                   "email": {
                     "description": "E-mail address",
                     "type": "string",
-                    "example": "twopykaJohn_Doe@gmail.com"
+                    "example": "twopyka@gmail.com"
                   },
                   "password": {
                     "description": "Password",
