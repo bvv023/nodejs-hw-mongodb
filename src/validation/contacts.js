@@ -20,20 +20,17 @@ export const createContactSchema = Joi.object({
   photo: Joi.any().optional(),
 });
 
-
 export const updateContactSchema = Joi.object({
-  name: Joi.string().min(3).max(20).optional(),
-  phoneNumber: Joi.string().min(3).max(20).optional(),
+  name: Joi.string().min(3).max(20).optional().allow(null, ''),
+  phoneNumber: Joi.string().min(3).max(20).optional().allow(null, ''),
   email: Joi.string().email().optional().allow(null, '').messages({
     'string.email': `"email" must be a valid email`,
     'string.empty': `"email" is not allowed to be empty`,
   }),
   isFavourite: Joi.boolean().optional().allow(null),
-  contactType: Joi.string().valid('home', 'personal', 'work').optional().messages({
+  contactType: Joi.string().valid('home', 'personal', 'work').optional().allow(null, '').messages({
     'any.only': `"contactType" must be one of [home, personal, work]`,
     'string.empty': `"contactType" is not allowed to be empty`,
   }),
   photo: Joi.any().optional(),
 }).min(1);
-
-
