@@ -932,10 +932,11 @@
         ],
         "properties": {
           "_id": {
-            "description": "Backend-generated unique identifier.",
+            "description": "Backend-generated unique identifier (not required in request, only in responses).",
             "type": "string",
             "format": "objectId",
-            "example": "66c5f3ff36b6e6d8e160fb04"
+            "example": "66c5f3ff36b6e6d8e160fb04",
+            "readOnly": true
           },
           "name": {
             "description": "Username",
