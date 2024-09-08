@@ -12,7 +12,9 @@ export const createContactSchema = Joi.object({
     'string.email': `"email" must be a valid email`,
     'string.empty': `"email" is not allowed to be empty`,
   }),
-  isFavourite: Joi.boolean().optional().allow(null),
+  isFavourite: Joi.boolean().optional().allow(null, '').messages({
+    'boolean.base': `"isFavourite" must be a boolean`,
+  }),
   contactType: Joi.string().valid('home', 'personal', 'work').required().messages({
     'any.only': `"contactType" must be one of [home, personal, work]`,
     'string.empty': `"contactType" is not allowed to be empty`,
@@ -27,7 +29,9 @@ export const updateContactSchema = Joi.object({
     'string.email': `"email" must be a valid email`,
     'string.empty': `"email" is not allowed to be empty`,
   }),
-  isFavourite: Joi.boolean().optional().allow(null),
+  isFavourite: Joi.boolean().optional().allow(null, '').messages({
+    'boolean.base': `"isFavourite" must be a boolean`,
+  }),
   contactType: Joi.string().valid('home', 'personal', 'work').optional().allow(null, '').messages({
     'any.only': `"contactType" must be one of [home, personal, work]`,
     'string.empty': `"contactType" is not allowed to be empty`,

@@ -1,12 +1,11 @@
 // src/controllers/contacts.js
-// src/controllers/contacts.js
-import createHttpError from 'http-errors';
+import createHttpError from 'http-errors'; // Імпорт createHttpError
 import {
   createContact,
   deleteContact,
   getAllContacts,
   getContactById,
-  updateContact,
+  updateContact, // Додати імпорт updateContact
 } from '../services/contacts.js';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
@@ -54,9 +53,15 @@ export const getContactByIdController = async (req, res) => {
 export const createContactController = async (req, res, next) => {
   try {
     const contactData = {
-      ...req.body,
       userId: req.user._id,
     };
+
+    // Фільтрування полів для створення: ігнорування порожніх значень та значень null або undefined
+    Object.keys(req.body).forEach((key) => {
+      if (req.body[key] !== '' && req.body[key] !== null && req.body[key] !== undefined) {
+        contactData[key] = req.body[key];
+      }
+    });
 
     let photoUrl;
 
@@ -110,10 +115,10 @@ export const patchContactController = async (req, res) => {
     }
   }
 
-  // Фільтрування полів для оновлення: ігнорування порожніх значень
+  // Фільтрування полів для оновлення: ігнорування порожніх значень та значень null або undefined
   const updateData = {};
   Object.keys(req.body).forEach((key) => {
-    if (req.body[key] !== '' && req.body[key] !== null) {
+    if (req.body[key] !== '' && req.body[key] !== null && req.body[key] !== undefined) {
       updateData[key] = req.body[key];
     }
   });

@@ -61,19 +61,18 @@ export const updateContact = async (
 ) => {
   const rawResult = await ContactsCollection.findOneAndUpdate(
     { _id: contactId, userId },
-    payload,
+    { $set: payload },  // Використовуємо $set для оновлення лише переданих полів
     {
       new: true,
-      includeResultMetadata: true,
+      runValidators: true,  // Дозволяємо перевірку даних
       ...options,
     },
   );
 
-  if (!rawResult || !rawResult.value) return null;
+  if (!rawResult) return null;
 
   return {
-    contact: rawResult.value,
-    isNew: Boolean(rawResult?.lastErrorObject?.upserted),
+    contact: rawResult,
   };
 };
 
