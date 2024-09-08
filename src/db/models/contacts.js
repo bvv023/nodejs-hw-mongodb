@@ -18,10 +18,11 @@ const contactsSchema = new Schema(
     isFavourite: {
       type: Boolean,
       default: false,
+      set: (value) => value === '' ? undefined : value, // Ігнорувати порожні значення
     },
     contactType: {
       type: String,
-      enum: ['home', 'personal', `work`],
+      enum: ['home', 'personal', 'work'],
       required: true,
       default: 'home',
     },
