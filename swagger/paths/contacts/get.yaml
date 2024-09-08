@@ -33,7 +33,7 @@ parameters:
       example: 'asc'
     description: Order to sort the results. Can be "asc" or "desc".
   - in: query
-    name: isFavorite
+    name: isFavourite
     schema:
       type: boolean
       example: true
