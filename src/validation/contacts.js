@@ -13,12 +13,13 @@ export const createContactSchema = Joi.object({
     'string.empty': `"email" is not allowed to be empty`,
   }),
   isFavourite: Joi.boolean().optional().allow(null),
-  contactType: Joi.string().valid('home', 'personal').required().messages({
-    'any.only': `"contactType" must be one of [home, personal]`,
+  contactType: Joi.string().valid('home', 'personal', 'work').required().messages({
+    'any.only': `"contactType" must be one of [home, personal, work]`,
     'string.empty': `"contactType" is not allowed to be empty`,
   }),
   photo: Joi.any().optional(),
 });
+
 
 export const updateContactSchema = Joi.object({
   name: Joi.string().min(3).max(20).optional().messages({
