@@ -1,11 +1,9 @@
 #swagger/components/schemas/contact.yaml
 type: object
 required:
-  - _id
   - name
   - phoneNumber
   - contactType
-  - userId
 properties:
   _id:
     description: 'Backend-generated unique identifier.'
@@ -25,7 +23,7 @@ properties:
     type: string
     example: 'twopyka@gmail.com'
   isFavourite:
-    description: 'Indicates whether the contact is marked as a favorite'
+    description: 'Indicates whether the contact is marked as a favourite'
     type: boolean
     example: false
   contactType:
