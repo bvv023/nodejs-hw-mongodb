@@ -84,7 +84,7 @@
           },
           {
             "in": "query",
-            "name": "isFavorite",
+            "name": "isFavourite",
             "schema": {
               "type": "boolean",
               "example": true
@@ -217,7 +217,7 @@
                     "example": "work",
                     "default": "personal"
                   },
-                  "isFavorite": {
+                  "isFavourite": {
                     "description": "Indicates whether the contact is marked as a favorite",
                     "type": "boolean",
                     "example": false,
@@ -382,7 +382,7 @@
                     "type": "string",
                     "example": "+1234567890"
                   },
-                  "isFavorite": {
+                  "isFavourite": {
                     "description": "Indicates whether the contact is marked as a favorite",
                     "type": "boolean",
                     "example": true
@@ -703,7 +703,7 @@
                   "refreshToken": {
                     "description": "The refresh token used to obtain a new access token",
                     "type": "string",
-                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NmM2ZmQ2MzZhNzk2ODk5MTYzNDBmZTciLCJlbWFpbCI6ImNodW1hY2hvY2xAZ21haWwuY29tIiwiaWF0IjoxNzI0NzYzNzkwLCJleHAiOjE3MjQ3NjQwOTB9.n8nu12RjBqv0g9twrPExpV-9bkDVfDNZDPSbHx6hwyw"
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                   }
                 }
               }
@@ -738,7 +738,7 @@
                         "token": {
                           "description": "New JWT access token",
                           "type": "string",
-                          "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NmM2ZmQ2MzZhNzk2ODk5MTYzNDBmZTciLCJlbWFpbCI6ImNodW1hY2hvY2xAZ21haWwuY29tIiwiaWF0IjoxNzI0NzYzNzkwLCJleHAiOjE3MjQ3NjQwOTB9.n8nu12RjBqv0g9twrPExpV-9bkDVfDNZDPSbHx6hwyw"
+                          "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                         }
                       }
                     }
@@ -985,7 +985,7 @@
             "type": "string",
             "example": "twopyka@gmail.com"
           },
-          "isFavorite": {
+          "isFavourite": {
             "description": "Indicates whether the contact is marked as a favorite",
             "type": "boolean",
             "example": false
