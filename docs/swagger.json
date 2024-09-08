@@ -396,11 +396,10 @@
                     "description": "Specifies the type of contact",
                     "type": "string",
                     "enum": [
-                      "work",
                       "home",
                       "personal"
                     ],
-                    "example": "work"
+                    "example": "home"
                   },
                   "photo": {
                     "description": "The photo of the contact",
@@ -432,7 +431,7 @@
                     },
                     "message": {
                       "type": "string",
-                      "example": "Successfully patched contact with id 66c705b05a68dd9ca451a403!"
+                      "example": "Successfully patched contact with id 66a35382997eac73e992ae30!"
                     },
                     "data": {
                       "type": "object",
