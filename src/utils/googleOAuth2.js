@@ -11,7 +11,7 @@ const oauthConfig = JSON.parse(await readFile(PATH_JSON));
 const googleOAuthClient = new OAuth2Client({
   clientId: env('GOOGLE_AUTH_CLIENT_ID'),
   clientSecret: env('GOOGLE_AUTH_CLIENT_SECRET'),
-  redirectUri: oauthConfig.web.redirect_uris[0], // Оновлений редірект
+  redirectUri: oauthConfig.web.redirect_uris[0],
 });
 
 export const generateAuthUrl = () =>

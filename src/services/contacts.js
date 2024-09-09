@@ -61,10 +61,10 @@ export const updateContact = async (
 ) => {
   const rawResult = await ContactsCollection.findOneAndUpdate(
     { _id: contactId, userId },
-    { $set: payload },  // Використовуємо $set для оновлення лише переданих полів
+    { $set: payload },
     {
       new: true,
-      runValidators: true,  // Дозволяємо перевірку даних
+      runValidators: true,
       ...options,
     },
   );
