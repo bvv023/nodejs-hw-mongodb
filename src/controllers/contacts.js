@@ -1,11 +1,11 @@
 // src/controllers/contacts.js
-import createHttpError from 'http-errors'; // Імпорт createHttpError
+import createHttpError from 'http-errors';
 import {
   createContact,
   deleteContact,
   getAllContacts,
   getContactById,
-  updateContact, // Додати імпорт updateContact
+  updateContact,
 } from '../services/contacts.js';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
@@ -56,7 +56,6 @@ export const createContactController = async (req, res, next) => {
       userId: req.user._id,
     };
 
-    // Фільтрування полів для створення: ігнорування порожніх значень та значень null або undefined
     Object.keys(req.body).forEach((key) => {
       if (req.body[key] !== '' && req.body[key] !== null && req.body[key] !== undefined) {
         contactData[key] = req.body[key];
@@ -115,7 +114,6 @@ export const patchContactController = async (req, res) => {
     }
   }
 
-  // Фільтрування полів для оновлення: ігнорування порожніх значень та значень null або undefined
   const updateData = {};
   Object.keys(req.body).forEach((key) => {
     if (req.body[key] !== '' && req.body[key] !== null && req.body[key] !== undefined) {
@@ -123,7 +121,6 @@ export const patchContactController = async (req, res) => {
     }
   });
 
-  // Додавання фото до даних для оновлення, якщо воно є
   if (photoUrl) {
     updateData.photo = photoUrl;
   }

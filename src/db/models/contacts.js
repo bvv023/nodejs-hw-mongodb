@@ -18,7 +18,7 @@ const contactsSchema = new Schema(
     isFavourite: {
       type: Boolean,
       default: false,
-      set: (value) => value === '' ? undefined : value, // Ігнорувати порожні значення
+      set: (value) => value === '' ? undefined : value,
     },
     contactType: {
       type: String,
